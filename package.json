@@ -1,0 +1,41 @@
+{
+  "name": "minson",
+  "version": "1.0.0",
+  "description": "Data serializer with minimal output.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --reporter spec",
+    "coverage": "babel-istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec"
+  },
+  "keywords": [
+    "serializer",
+    "serialization",
+    "minimum",
+    "minified",
+    "unicode",
+    "wtf-8",
+    "wtf8",
+    "utf-8",
+    "utf8",
+    "notation",
+    "binary",
+    "json"
+  ],
+  "author": "Daniel Braksator",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^10.0.2",
+    "chai": "^3.5.0",
+    "chai-fs": "^1.0.0",
+    "eslint": "^6.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^6.2.0",
+    "mocha-eslint": "^3.0.1"
+  },
+  "dependencies": {
+    "utf8": "^3.0.0",
+    "wtf-8": "^1.0.1"
+  }
+}
