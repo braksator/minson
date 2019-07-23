@@ -320,6 +320,27 @@ This is useful for encoding/decoding an object with unknown keys.
 
 Aliases: json.
 
+### Variables of unknown or mixed type
+
+This isn't an ideal usage of Minson, but you can supply an empty configuration
+string:
+
+```javascript
+// An object containing a property of unknown type:
+var template = {
+  property: '',
+}
+
+// An array with mixed values:
+var template = [''];
+
+// A scalar variable of unknown type:
+var template = '';
+```
+Minson will handle the value reasonably well if it is a scalar or array value,
+and objects will be handled using the *json* type (as Minson won't be templated
+to handle that object's keys).
+
 ## Default Values
 
 If your templated value is missing from your input data (i.e. it is undefined),
@@ -433,27 +454,6 @@ on them.
 If you prefer the terminology, Minson.encode() is aliased with 
 Minson.stringify() and Minson.serialize().  Similarly Minson.decode() is
 aliased with Minson.parse() and Minson.unserialize().
-
-### Variables of unknown or mixed type
-
-This isn't an ideal usage of Minson, but you can supply an empty configuration
-string:
-
-```javascript
-// An object containing a property of unknown type:
-var template = {
-  property: '',
-}
-
-// An array with mixed values:
-var template = [''];
-
-// A scalar variable of unknown type:
-var template = '';
-```
-Minson will handle the value reasonably well if it is a scalar or array value,
-and objects will be handled using the *json* type (as Minson won't be templated
-to handle that object's keys).
 
 ## Unexpected Values
 
