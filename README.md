@@ -21,6 +21,8 @@ Will happily handle large strings, floats, big ints, and nested structures.
 
 This is a Node.JS module available from the Node Package Manager (NPM).
 
+https://www.npmjs.com/package/minson
+
 Here's the command to download and install from NPM:
 
 `npm install minson -S`
@@ -485,5 +487,7 @@ and then execute:
 A coverage summary will be displayed and a full coverage report will appear in the /coverage directory.
 
 ## Contributing
+
+https://github.com/braksator/minson
 
 In lieu of a formal style guide, take care to maintain the existing coding style. Add mocha tests for coverage and explicitly test bugs.

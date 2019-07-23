@@ -23,6 +23,10 @@
   ],
   "author": "Daniel Braksator",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/braksator/minson.git"
+  },
   "devDependencies": {
     "babel-core": "^6.26.3",
     "babel-eslint": "^10.0.2",
