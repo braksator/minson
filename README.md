@@ -7,7 +7,9 @@ Data serializer with minimal output.
 
 Serializes an object (or other variable) using a predefined template into a
 non-human readable output string that uses a minimum amount of UTF-8
-characters.  
+characters.
+
+> WARNING: This package is new and still going through testing.  
 
 Designed for storage of app configs in text files, therefore works particularly
 well with multiple-choice values such as booleans and enums.  Also efficient
