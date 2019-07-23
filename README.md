@@ -157,10 +157,10 @@ range.
 | bigint(64)                        	| 8-byte BigInt() signed integer                                                                                              	| -2^63 to 2^63-1                 	|
 | biguint(64)                       	| 8-byte BigInt() unsigned integer   	                                                                                          | 0 to 2^64-1                     	|
 | varchar(255)                        | A string with 255 bytes or less                                                                                               | 0 to 255 bytes                    |
-| varchar                             | Long string                                                                                                                   |                                   |
-| char                              	| Up to 1-byte char                                                                                                            	| 0 to 1 byte                      	|
-| wchar                             	| 4-byte wide char                                                                                                            	| 💩                                |
-| json                                | Any var that can be stored in JSON                                                                                            |                                   |
+| varchar                             | Long string                                                                                                                   | unlimited                         |
+| char                              	| Character                                                                                                                   	| 0 to 255 (by default)            	|
+| wchar                             	| Wide character up to 4 bytes                                                                                                 	| 0 to 4,294,967,295                |
+| json                                | Any value that can be stored in JSON                                                                                          | unlimited                         |
 
 ### bool
 
