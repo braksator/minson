@@ -145,7 +145,7 @@ range.
 | bool                              	| Boolean true or false                                                                                                       	| true & false                    	|
 | bool(value1, value2)              	| 2-value list                                                                                                                	| value1 & value2                 	|
 | enum(n)                           	| Multiple-choice integers                                                                                                    	| 0 to n-1                        	|
-| enum(value1, value2, value3, ...) 	| Multiple-choice list                                                                                                        	| Any listed value                	|
+| enum(val1, val2, val3, ...)       	| Multiple-choice list                                                                                                        	| Any listed value                	|
 | int(8)                            	| 1-byte signed integer                                                                                                       	| -128 to 127                     	|
 | uint(8)                           	| 1-byte unsigned integer                                                                                                     	| 0 to 255                        	|
 | int(16)                           	| 2-byte signed integer                                                                                                       	| -32,768 to 32,767               	|
@@ -160,10 +160,12 @@ range.
 | varchar                             | Long string                                                                                                                   |                                   |
 | char                              	| Up to 1-byte char                                                                                                            	| 0 to 1 byte                      	|
 | wchar                             	| 4-byte wide char                                                                                                            	| 💩                                |
-| json                                | JSON                                                                                                                          |                                   |
+| json                                | Any var that can be stored in JSON                                                                                            |                                   |
 
 ### bool
+
 **Boolean**
+
 `bool(param)[default]`
 Param: Two values separated by comma (optional - defaults to *true, false*)
 
@@ -185,7 +187,9 @@ Examples:
 Aliases: bool, boolean.
 
 ### enum
+
 **Enumerated**
+
 `enum(param)[default]`
 Param: One or more values separated by commas, or a single integer (required)
 
@@ -205,7 +209,9 @@ Examples:
 Aliases: enum.
 
 ### int
+
 **Signed integer**
+
 `int(size)[default]`
 Size: 8, 16, or 32 (required) 
 
@@ -222,7 +228,9 @@ Example:
 Aliases: int, i, integer, signed, signed int, signed integer.
 
 ### uint
+
 **Unsigned integer**
+
 `uint(size)[default]`
 Size: 8, 16, or 32 (required)
 
@@ -238,7 +246,9 @@ Example:
 Aliases: uint, u, unsigned, unsigned int, unsigned integer.
 
 ### float
+
 **Floating-point number**
+
 `float(size)[default]`
 Size: 32 or 64 (required)
 
@@ -256,7 +266,9 @@ Example:
 Aliases: float, double, decimal.
 
 ### bigint
+
 **Signed BigInt**
+
 `bigint(size)[default]`
 Size: 64 (required)
 
@@ -265,7 +277,9 @@ For JavaScript [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/
 Aliases: bigint.
 
 ### biguint
+
 **Unsigned BigInt**
+
 `bigint(size)[default]`
 Size: 64 (required)
 
@@ -274,7 +288,9 @@ For JavaScript [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/
 Aliases: biguint.
 
 ### varchar
+
 **Variable-sized character string**
+
 `varchar(size)[default]{charset}`
 Size: 255 (optional)
 
@@ -290,7 +306,9 @@ If the param is not supplied, a string of any length can be used.
 Aliases: varchar, text, string.
 
 ### char
+
 **Character**
+
 `char[default]{charset}`
 
 Used for strings of exactly one character, which by default is 8-bits (1 byte)
@@ -302,7 +320,9 @@ values of less than one byte (See "Custom Charset")
 Aliases: char, byte.
 
 ### wchar
+
 **Wide character**
+
 `wchar[default]`
 Param: (not applicable)
 
@@ -312,7 +332,9 @@ Used for strings of exactly one Unicode character, which may be up to
 Aliases: wchar.
 
 ### json
+
 **JSON**
+
 `json[default]`
 Param: (not applicable)
 
@@ -350,10 +372,14 @@ to handle that object's keys).
 If your templated value is missing from your input data (i.e. it is undefined),
 you can supply a default value in the template by appending square brackets.
 
+
 ```javascript
 // Set the integer to 1 if it is missing.
 int(32)[1]
 ```
+
+The default value is stored during encoding, and changing the templated default
+value will have no effect during decoding.
 
 ## Custom Charset
 
@@ -412,7 +438,7 @@ An alternative to typing `'type(param)[default]{charset}'` strings is to
 generate these strings using `Minson.config()`.
 
 ```javascript
-var configString = Minson.config(Minson.type.TYPE, param, default, charset);
+var cfgStr = Minson.config(Minson.type.TYPE, param, default, charset);
 ```
 
 This will perform some basic error checking and sanitization, and may be 
@@ -422,7 +448,7 @@ Allowed values for TYPE are:
 BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, WCHAR, VARCHAR, JSON
 
 ```javascript
-var configString = Minson.config(Minson.type.ENUM, ['one', 'two', 'three'], 'three');
+var cfgStr = Minson.config(Minson.type.ENUM, ['one', 'two', 'three'], 'three');
 ```
 
 Notice how it's possible to supply an actual array to the *param* value.  This
@@ -431,7 +457,7 @@ also applies to the *default* value.
 You can also supply an equivalent object like so:
 
 ```javascript
-var configString = Minson.config({
+var cfgStr = Minson.config({
   type: Minson.type.ENUM, 
   param: ['one', 'two', 'three'], 
   default: 'three',
@@ -441,7 +467,7 @@ var configString = Minson.config({
 The *param* key can also be called *size* when that feels appropriate:
 
 ```javascript
-var configString = Minson.config({
+var cfgStr = Minson.config({
   type: Minson.type.INT, 
   size: 32,
 });
@@ -450,6 +476,7 @@ var configString = Minson.config({
 You can also use `Minson.charset.CHARSET` to supply a predefined charset.  
 Available values for CHARSET are:
 ALPHANUMERIC, NUMERIC, HEXADECIMAL, ALPHA, ALPHAUPPER, ALPHALOWER
+
 You can concatenate multiple charsets or perform other string operations
 on them.
 
@@ -482,12 +509,15 @@ Tests are available in the github repo and can be executed with `npm test`.
 
 To check coverage you have to install istanbul globally:
 `npm install istanbul -g`
-and then execute:
-`npm run coverage`
-A coverage summary will be displayed and a full coverage report will appear in the /coverage directory.
+
+and then execute: `npm run coverage`
+
+A coverage summary will be displayed and a full coverage report will appear in
+the /coverage directory.
 
 ## Contributing
 
 https://github.com/braksator/minson
 
-In lieu of a formal style guide, take care to maintain the existing coding style. Add mocha tests for coverage and explicitly test bugs.
+In lieu of a formal style guide, take care to maintain the existing coding
+style. Add mocha tests for coverage and explicitly test bugs.
