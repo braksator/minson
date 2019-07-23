@@ -6,8 +6,7 @@ MINSON
 Data serializer with minimal output.
 
 Serializes an object (or other variable) using a predefined template into a
-non-human readable output string that uses a minimum amount of UTF-8
-characters.
+non-human readable output string that uses a minimal amount of characters.
 
 > WARNING: This package is new and still going through testing.  
 
