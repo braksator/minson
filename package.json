@@ -1,6 +1,6 @@
 {
   "name": "minson",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Data serializer with minimal output.",
   "main": "index.js",
   "scripts": {
