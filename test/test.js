@@ -665,6 +665,21 @@ describe('Minson', function () {
     expect(result).to.eql(input);
   });
 
+  it('should have consistent output from aliased functions', function () {
+    var Minson = require('../index');
+    var test = "a test string";
+    var config = "";
+
+    var enc1 = Minson.encode(config, test);
+    var enc2 = Minson.serialize(config, test);
+    var enc3 = Minson.stringify(config, test);
+    
+    var dec1 = Minson.decode(config, enc1);
+    var dec2 = Minson.unserialize(config, enc2);
+    var dec3 = Minson.parse(config, enc3);
+
+    expect(enc1 == enc2 && enc1 == enc3 && dec1 == dec2 && dec1 == dec3).to.equal(true);
+  });
 
 });
 
