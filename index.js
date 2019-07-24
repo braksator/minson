@@ -5,12 +5,11 @@
  * @file
  * Minson encoder/decoder.
  */
-
-var wtf8 = require('wtf-8');
-var utf8 = require('utf8');
+const base64encode = str => Buffer.from(str, 'binary').toString('base64');
+const base64decode = str => Buffer.from(str, 'base64').toString('binary');
 
 var Minson = module.exports =  {
-    format: 'wtf-8',
+    format: null,
     decodePos: 0,
     bits: '',
     aliases: {
@@ -99,7 +98,20 @@ var Minson = module.exports =  {
         if (val == parseFloat(val)) return parseFloat(val);
         return val;
     },
+
+    escape(text) {    
+        return text
+            .replace(/\\/g, '\\\\')
+            .replace(/\n/g, '\\n');
+    },
     
+    unescape(text) {
+        var replacements = {'\\\\': '\\', '\\n': '\n'};
+        return text.replace(/\\(\\|n|")/g, function(replace) {
+            return replacements[replace];
+        });
+    },
+
     _paramToList: (param) => {
         return param.split(/,(?=(?:(?:[^'"]*(?:'|")){2})*[^'"]*$)/).map(function (p) {
             return p.trim().replace(/^["'](.*)["']$/, '$1');
@@ -280,43 +292,43 @@ var Minson = module.exports =  {
     },
 
     encode: (config, input, format) => {
-        Minson.format = format !== undefined ? format : 'wtf-8';
+        Minson.format = format ? format : null;
         Minson.bits = '';
         Minson._encode(config, input);
         var text = '';
-        var chunks = Minson.bits.padEnd(Minson.bits.length % 8, '0').match(/.{1,8}/g);
+        var chunks = Minson.bits.padEnd(Minson.bits.length + 8 - (Minson.bits.length % 8), '0').match(/.{1,8}/g);
         Minson.bits = '';
         if (Minson.format == 'bits') {
             return chunks;
         }
         for (var i = 0; i < chunks.length; ++i) {
-            text += parseInt(chunks[i], 2);
+            text += String.fromCharCode(parseInt(chunks[i], 2));
         }
-        if (Minson.format == 'wtf-8') {
-            text = wtf8.encode(text);
+        if (Minson.format == 'noescape') {
+            return text;
         }
-        else if (Minson.format == 'utf-8') {
-            text = utf8.encode(text);
+        if (Minson.format == 'base64') {
+            return base64encode(text);
         }
-        return text;
+        return Minson.escape(text);
     },
 
     decode: (config, input, format) => {
-        Minson.format = format !== undefined ? format : 'wtf-8';
+        Minson.format = format ? format : null;
         if (input) {
             if (Minson.format == 'bits') {
                 Minson.bits = input.join('');
             }
             else {
-                if (Minson.format == 'wtf-8') {
-                    input = wtf8.decode(input);
+                if (Minson.format == 'base64') {
+                    input = base64decode(input);
                 }
-                else if (Minson.format == 'utf-8') {
-                    input = utf8.decode(input);
+                else if (!Minson.format) {
+                    input = Minson.unescape(input);
                 }
                 Minson.bits = '';
                 for (var i = 0; i < input.length; ++i) {
-                    Minson.bits += input.charCodeAt(i).toString(2);
+                    Minson.bits += input.charCodeAt(i).toString(2).padStart(8, '0');
                 }
             }
             Minson.decodePos = 0;
@@ -417,7 +429,6 @@ var Minson = module.exports =  {
         var numBytes = config.param / 8;
         var buffer = new ArrayBuffer(numBytes);
         var dataView = new DataView(buffer);
-
         var chunks = Minson.bits.substring(Minson.decodePos, Minson.decodePos + (numBytes * 8)).match(/.{1,8}/g);
         Minson.decodePos += (numBytes * 8);
         for (var offset = 0; offset < numBytes; ++offset) {
@@ -432,7 +443,7 @@ var Minson = module.exports =  {
         }
 
         if (config.type == 'bigint' || config.type == 'biguint') {
-            out = BigInt(out);
+            out = BigInt(out + 'n');
         }
         else {
             out = Minson._unstring(out);

@@ -416,17 +416,16 @@ should be consistent between encode() and decode().
 
 ## Encoding Format
 
-By default Minson uses [WTF-8 Encoding](https://simonsapin.github.io/wtf-8/)
-which may not be suitable for user-editable text files and online transmission.
+By default Minson escapes newline characters from its output, this can increase
+the length of the output slightly.
 
 The entry functions for Minson allow an optional third parameter to set the
-encoding format: `Minson.encode(config, input, format)` and 
+output format: `Minson.encode(config, input, format)` and 
 `Minson.decode(config, input, format)`.
 
 Valid *format* values are the following strings:
-- 'wtf-8' (default) e.g. `Minson.encode(config, input, 'wtf-8')`
-- 'utf-8' e.g. `Minson.encode(config, input, 'utf-8')`
-- '' (i.e. empty string) for unencoded char bytes e.g. `Minson.encode(config, input, '')`
+- 'noescape' to allow shorter multiline output e.g. `Minson.encode(config, input, 'noescape')`
+- 'base64' for longer output without gibberish e.g. `Minson.encode(config, input, 'base64')`
 - 'bits' for an array of bit strings e.g. `Minson.encode(config, input, 'bits')`
 
 Just remember to set this the same way for encode() and decode().

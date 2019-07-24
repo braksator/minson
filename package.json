@@ -37,8 +37,5 @@
     "mocha": "^6.2.0",
     "mocha-eslint": "^3.0.1"
   },
-  "dependencies": {
-    "utf8": "^3.0.0",
-    "wtf-8": "^1.0.1"
-  }
+  "dependencies": {}
 }

@@ -590,6 +590,81 @@ describe('Minson', function () {
     });
   });
 
+  it('should encode and decode', function () {
+    var Minson = require('../index');
+    var template = {
+      myObject: {myKey: 'int(8)'},
+      myInt: 'int(32)',
+      myUint: 'uint(16)',
+      myFloat: 'float(64)',
+      myEnum: 'enum("uno", "dos", "tres")',
+      myBool: 'bool',
+      myBoolTrue: 'bool[true]',
+      myVarchar: 'varchar',
+      myVarchar255: 'varchar(255)',
+      myVarchar255Charset: 'varchar(255){ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789}',
+      myVarchar255CharsetObj: 'varchar(255)["abc123"]{ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789}',
+      myJson: 'json',
+      myUnknown: '',
+    };
+
+    var input = {
+      myObject: {myKey: 72},
+      myInt: -45,
+      myUint: 87,
+      myFloat: 343.54,
+      myEnum: "dos",
+      myBool: true,
+      myBoolTrue: false,
+      myVarchar: "The quick brown fox jumps over the lazy dog.",
+      myVarchar255: 'dlkj3dlkj2l',
+      myVarchar255Charset: 'mnop99',
+      myVarchar255CharsetObj: 'lskjassada',
+      myJson: {one: 1, two: 2, three: 3},
+      myUnknown: [{test1: 'x3', test2: 34332}],
+    };
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
+  it('should encode and decode object with bigints', function () {
+    var Minson = require('../index');
+    var template = {
+      myBigint: 'bigint(64)',
+      myBiguint: 'biguint(64)',
+    };
+
+    var input = {
+      myBigint: -54294967295n,
+      myBiguint: 9223372036854775900n,
+    };
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result.myBigint.toString()).to.equal(input.myBigint.toString());
+    expect(result.myBiguint.toString()).to.equal(input.myBiguint.toString());
+  });
+  
+  it('should encode and decode object with array', function () {
+    var Minson = require('../index');
+    var template = {
+      myArr: ['int(8)'],
+    };
+
+    var input = {
+      myArr: [8, 2, 4, 5],
+    };
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
 
 });
 
