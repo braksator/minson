@@ -24,7 +24,8 @@ Will happily handle large strings, floats, big ints, and nested structures.
 
 Given a JavaScript object value Minson creates a string that looks something like this:
 
-> HÿÿÿÓ W@ux£×\n=q`╗ÅFRV6²═'&÷vâ═f÷═§V×2═÷fW"FR═Æ§═Förà¶FÆ¶£6FÆ¶£&Ài§¢É#jËu ╔·²&öæR#£Â'Gvò#£"Â'F&VR#£7Þø qìÑÍÐÄèàÌ°ÑÍÐÈèÌÐÌÌÉô
+> HÿÿÿÓW@ux£×\n=q`╗ÅFRV6²═'&÷vâ═f÷═§V×2═÷fW"FR═Æ§═Förà¶FÆ¶£6FÆ¶£&Ài§¢É#jËu ╔·²&
+> öæR#£Â'Gvò#£"Â'F&VR#£7Þø qìÑÍÐÄèàÌ°ÑÍÐÈèÌÐÌÌÉô
 
 ## MINSON vs JSON vs BSON
 
