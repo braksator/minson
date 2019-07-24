@@ -63,7 +63,7 @@ var Minson = module.exports =  {
         var config = {};
 
         // Before any parens or brackets.
-        var type = unparsedConfig.match(/[^()\[\]]+/g);
+        var type = unparsedConfig.match(/[^()\[\]\{\}]+/g);
         config.type = type[0];
         // Get contents of optional parens.
         var param = unparsedConfig.match(/\(([^)]+)\)/);
@@ -107,7 +107,7 @@ var Minson = module.exports =  {
     },
 
     unknownTypes: ['bool', 'Int', 'Uint', 'Float', 'BigInt', 'char', 'varchar', null],
-    unknownTypesExtended: ['BigUint', 'array', 'any', null],
+    unknownTypesExtended: ['BigUint', 'array', 'json', null],
     unknownParams: [8, 16, 32, 64],
 
     _encodeUnknownType: (type) => {
@@ -116,7 +116,7 @@ var Minson = module.exports =  {
         }
         else if (Minson.unknownTypesExtended.indexOf(type) > -1) {
             Minson.bits += Minson.unknownTypes.indexOf(null).toString(2).padStart(Math.ceil(Math.log2(Minson.unknownTypes.length)), '0');
-            Minson.bits += Minson.unknownTypesExtended.indexOf(type).toString(2).padStart(Math.ceil(Math.log2(Minson.unknownTypes.length)), '0');
+            Minson.bits += Minson.unknownTypesExtended.indexOf(type).toString(2).padStart(Math.ceil(Math.log2(Minson.unknownTypesExtended.length)), '0');
         }
     },
 
@@ -139,34 +139,35 @@ var Minson = module.exports =  {
             type = 'bool';
             Minson._encodeUnknownType(type);
         }
-        else if (typeof input === 'bigint') {
+        else if (typeof input == 'bigint') {
             type = input <= Math.pow(2, 63) - 1 ? 'BigInt' : 'BigUint';
             param = '64';
             Minson._encodeUnknownType(type);
             // For future flagging purposes if BigInt() spec changes.
             Minson.bits += '0';
         }
-        else if (parseInt(input) === input) {
+        else if (parseInt(input) == input) {
             if (input < 0) {
                 type = 'Int';
                 param = Math.pow(2, Math.ceil(Math.log(Math.log2(Math.abs(input) * 2)) / Math.log(2)));
             }
             else {
                 type = 'Uint';
-                param = Math.pow(2, Math.ceil(Math.log(Math.log2(n + 1)) / Math.log(2)));
+                param = Math.pow(2, Math.ceil(Math.log(Math.log2(input + 1)) / Math.log(2)));
             }
             Minson._encodeUnknownType(type);
             Minson.bits += Minson.unknownParams.indexOf(param).toString(2).padStart(Math.ceil(Math.log2(Minson.unknownParams.length)), '0');
         }
-        else if (parseFloat(input) === input) {
+        else if (parseFloat(input) == input) {
             type = 'Float';
             param = (1.2e-38 <= input && input <= 3.4e38) ? 32 : 64;
             Minson._encodeUnknownType(type);
             Minson.bits += param == 32 ? '0' : '1';
         }
-        else if (typeof input === 'string') {
+        else if (typeof input == 'string') {
             if (input.length === 1) {
                 type = 'char';
+                Minson._encodeUnknownType(type);
             }
             else {
                 if (input.length <= 255) {
@@ -187,7 +188,7 @@ var Minson = module.exports =  {
             Minson._encodeUnknownType('array');
         }
         else {
-            type = 'any';
+            type = 'json';
             Minson._encodeUnknownType(type);
         }
         return param ? type + '(' + param + ')' : type;
@@ -201,6 +202,7 @@ var Minson = module.exports =  {
             case 'BigInt':
             case 'BigUint':
                 Minson.decodePos++;
+                param = '64';
             break;
             case 'Int':
             case 'Uint':
@@ -209,10 +211,10 @@ var Minson = module.exports =  {
                 Minson.decodePos += len;
             break;
             case 'Float':
-                param = Minson.bits.charCodeAt(Minson.decodePos++) === '0' ? '32' : '64';
+                param = Minson.bits.charAt(Minson.decodePos++) === '0' ? '32' : '64';
             break;
             case 'varchar':
-                if (Minson.bits.charCodeAt(Minson.decodePos++) === '1') {
+                if (Minson.bits.charAt(Minson.decodePos++) === '1') {
                     param = '255';
                 }
             break;
@@ -390,8 +392,6 @@ var Minson = module.exports =  {
 
     numberEncode: (config, input) => {
         var bits = '';
-
-        console.log("numberencode", config, input);
         
         var numBytes = config.param / 8;
         var buffer = new ArrayBuffer(numBytes);
@@ -407,7 +407,7 @@ var Minson = module.exports =  {
         for (var offset = 0; offset < numBytes; ++offset) {
             bits += dataView.getUint8(offset, false).toString(2).padStart(8, '0');
         }
-        console.log("number bits:", bits);
+
         Minson.bits += bits.padStart(config.param, '0');
     },
     
@@ -458,32 +458,39 @@ var Minson = module.exports =  {
     },
         
     charEncode: (config, input) => {
-        return config.charset ? Minson.charsetCharEncode(config.charset, input) : input.toString(2);
+        if (config.charset) {
+            return Minson.charsetCharEncode(config.charset, input);
+        }
+        Minson.bits += input.charCodeAt(0).toString(2).padStart(8, '0');
     },
 
     charDecode: (config) => {
         if (config.charset) {
             return Minson.charsetCharDecode(config.charset);
         }
-        var chunk = Minson.bits.substring(Minson.decodePos, Minson.decodePos + numBits);
-        Minson.decodePos += numBits;
+        var chunk = Minson.bits.substring(Minson.decodePos, Minson.decodePos + 8);
+        Minson.decodePos += 8;
         return String.fromCharCode(parseInt(chunk, 2));
     },
 
     wcharEncode: (config, input) => {
-        input = utf8.decode(input);
-        Minson.bits += input.split('').map(function (char) {
-            return char.charCodeAt(0).toString(2);
-        }).join('');
+        var code0 = input.charCodeAt(0);
+        var code1 = input.charCodeAt(1);
+        var bytes4 = !isNaN(code1);        
+        Minson.bits += bytes4 ? '1' : '0';
+        Minson._encode('uint(16)', input.charCodeAt(0));
+        if (bytes4) {
+            Minson._encode('uint(16)', input.charCodeAt(1));
+        }
     },
 
     wcharDecode: (config) => {
-        var char = '';
-        for (var pos = 0; pos < 4; ++pos) {
-            char += String.fromCharCode(parseInt(char.charCodeAt(pos), 2));
+        var bytes4 = Minson.bits.charAt(Minson.decodePos++) === '1';
+        var out = String.fromCharCode(Minson._decode('uint(16)'));
+        if (bytes4) {
+            out += String.fromCharCode(Minson._decode('uint(16)'));
         }
-        char = utf8.encode(char);
-        return char;
+        return out;
     },
         
     varcharEncode: (config, input) => {
@@ -545,11 +552,10 @@ var Minson = module.exports =  {
     
     arrayEncode: (config, input) => {
         var size = config.length > 1 ? config.length : null;
-        var type = config.length === 1 ? config.type : null;
 
         if (size === null) {
             var max = Math.pow(2, 8) - 1;
-            length = input.length;
+            var length = input.length;
             while (length >= max) {
                 length -= max;
                 Minson._encode('uint(8)', max);
@@ -560,7 +566,7 @@ var Minson = module.exports =  {
         var iters = size === null ? input.length : size;
 
         for (var i = 0; i < iters; ++i) {
-            Minson._encode(config[type === null ? config[0] : type], input[i]);
+            Minson._encode(config[i] || config[0], input[i]);
         }
     
     },
@@ -568,20 +574,19 @@ var Minson = module.exports =  {
     arrayDecode: (config) => {
         var out = [];
         var size = config.length > 1 ? config.length : null;
-        var type = config.length === 1 ? config.type : null;
 
         if (size === null) {
             var max = Math.pow(2, 8) - 1;
-            size = Minson.decode(Minson.bits.charCodeAt(Minson.decodePos++), 'uint(8)');
+            size = Minson._decode('uint(8)');
             var lastLength = size;
             while (lastLength == max) {
-                lastLength = Minson.decode(Minson.bits.charCodeAt(Minson.decodePos++), 'uint(8)');
+                lastLength = Minson._decode('uint(8)');
                 size += lastLength;
             }
         }
 
         for (var i = 0; i < size; ++i) {
-            out.push(Minson._decode(config[type === null ? config[0] : type]));
+            out.push(Minson._decode(config[i] || config[0]));
         }
 
         return out;
@@ -596,7 +601,7 @@ var Minson = module.exports =  {
     objectDecode: (config) => {
         var out = {};
         for (var key in config) {
-            out.key = Minson._decode(config[key]);
+            out[key] = Minson._decode(config[key]);
         }
         return out;
     },
@@ -630,6 +635,16 @@ var Minson = module.exports =  {
         ALPHA: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
         ALPHAUPPER: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
         ALPHALOWER: 'abcdefghijklmnopqrstuvwxyz',
+    },
+
+    configList: (list) => {
+        if (list !== undefined && Array.isArray(list)) {
+            list = list.map((val) => {
+                val = Minson._unstring(val);
+                return typeof val == 'string' ? '"' + val + '"' : val;
+            }).join(', ');
+        }
+        return list;
     },
 
     config: (type, param, def, charset) => {
@@ -669,13 +684,8 @@ var Minson = module.exports =  {
             throw "Minson received invalid param " + param + " for type " + type;
         }
 
-        if (param !== undefined && Array.isArray(param)) {
-            param = param.join(',');
-        }
-
-        if (def !== undefined && Array.isArray(def)) {
-            def = def.join(',');
-        }
+        param = Minson.configList(param);
+        def = Minson.configList(def);
 
         return type + (param ? '(' + param + ')': '') + (def ? '[' + def + ']' : '') + (charset ? '{' + charset + '}' : '');
     }

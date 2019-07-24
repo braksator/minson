@@ -325,7 +325,7 @@ Aliases: char, byte.
 `wchar[default]`
 Param: (not applicable)
 
-Used for strings of exactly one Unicode character, which may be up to
+Used for strings of exactly one multibyte character, which may be up to
 4-bytes in length. 
 
 Aliases: wchar.

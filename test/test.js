@@ -2,7 +2,6 @@
 
 var fs = require('fs');
 var chai = require('chai');
-chai.use(require('chai-fs'));
 var expect = chai.expect;
 var assert = chai.assert;
 var lint = require('mocha-eslint');
@@ -34,12 +33,6 @@ var options = {
 // Run the lint.
 lint(paths, options);
 
-var debugFuncs = (funcs) => {
-  for (let func in funcs) {
-    console.log(func + ":" + funcs[func].toString());
-  }
-};
-
 // Tests
 describe('Minson', function () {
 
@@ -53,6 +46,18 @@ describe('Minson', function () {
     Minson._encode(config, testBool);
     expect(Minson.bits).to.equal('1');
 
+    var result = Minson._decode(config);
+    expect(result).to.equal(true);
+  });
+
+  it('should handle unknown boolean true', function () {
+    var Minson = require('../index');
+    var testBool = true;
+    var config = "";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, testBool);
     var result = Minson._decode(config);
     expect(result).to.equal(true);
   });
@@ -176,6 +181,18 @@ describe('Minson', function () {
     expect(result).to.equal(1001);
   });
 
+  it('should handle unknown int', function () {
+    var Minson = require('../index');
+    var test = "1001";
+    var config = "";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.equal(1001);
+  });
+
   it('should handle uint(16)', function () {
     var Minson = require('../index');
     var test = "2301";
@@ -238,6 +255,18 @@ describe('Minson', function () {
     expect(result).to.be.closeTo(123.456, 0.001);
   });
 
+  it('should handle unknown float(32)', function () {
+    var Minson = require('../index');
+    var test = 123.456;
+    var config = "";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.be.closeTo(123.456, 0.001);
+  });
+
   it('should handle float(32) negative', function () {
     var Minson = require('../index');
     var test = -23.456;
@@ -262,7 +291,6 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result).to.be.closeTo(97531.0022, 0.001);
   });
-
   
   it('should handle bigint(64)', function () {
     var Minson = require('../index');
@@ -288,6 +316,18 @@ describe('Minson', function () {
     expect(result.toString()).to.equal(BigInt('-46574936470').toString());
   });
   
+  it('should handle unknown bigint(64) negative', function () {
+    var Minson = require('../index');
+    var test = -46574936470n;
+    var config = "";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result.toString()).to.equal(BigInt('-46574936470').toString());
+  });
+  
   it('should handle biguint(64)', function () {
     var Minson = require('../index');
     var test = 90199254740900n;
@@ -300,10 +340,34 @@ describe('Minson', function () {
     expect(result.toString()).to.equal(90199254740900n.toString());
   });
 
+  it('should handle unknown biguint(64)', function () {
+    var Minson = require('../index');
+    var test = 90199254740900n;
+    var config = "";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result.toString()).to.equal(90199254740900n.toString());
+  });
+
   it('should handle varchar(255)', function () {
     var Minson = require('../index');
     var test = "a test string";
     var config = "varchar(255)";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.equal("a test string");
+  });
+
+  it('should handle unknown varchar', function () {
+    var Minson = require('../index');
+    var test = "a test string";
+    var config = "";
     Minson.bits = '';
     Minson.decodePos = 0;
 
@@ -332,10 +396,194 @@ describe('Minson', function () {
     Minson.decodePos = 0;
 
     Minson._encode(config, test);
-    console.log("bits:", Minson.bits);
     var result = Minson._decode(config);
     expect(result).to.equal("ggaffbc");
   });
+
+  it('should handle varchar(255){charset}', function () {
+    var Minson = require('../index');
+    var test = "ggaffbc";
+    var config = "varchar(255){abcdefg}";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.equal("ggaffbc");
+  });
+
+  it('should handle char', function () {
+    var Minson = require('../index');
+    var test = "d";
+    var config = "char";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.equal("d");
+  });
+  
+  it('should handle unknown char', function () {
+    var Minson = require('../index');
+    var test = "d";
+    var config = "";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.equal("d");
+  });
+
+  it('should handle char{charset}', function () {
+    var Minson = require('../index');
+    var test = "y";
+    var config = "char{xyz}";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.equal("y");
+  });
+  
+  it('should handle 4-byte wchar', function () {
+    var Minson = require('../index');
+    var test = "🤣";
+    var config = "wchar";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.equal("🤣");
+  });
+
+  it('should handle 2-byte wchar', function () {
+    var Minson = require('../index');
+    var test = "æ";
+    var config = "wchar";
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.equal("æ");
+  });
+
+  it('should handle a fixed length array', function () {
+    var Minson = require('../index');
+    var test = [52, 42, 32, 22];
+    var config = ['int(8)', 'int(8)', 'int(8)', 'int(8)'];
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.eql([52, 42, 32, 22]);
+  });
+
+  it('should handle a variable length array', function () {
+    var Minson = require('../index');
+    var test = ['wiggle', 'it', 'just', 'a', 'little', 'bit'];
+    var config = ['varchar'];
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.eql(['wiggle', 'it', 'just', 'a', 'little', 'bit']);
+  });
+  
+  it('should handle unknown variable length array', function () {
+    var Minson = require('../index');
+    var test = ['wiggle', 'it', 'just', 'a', 'little', 'bit'];
+    var config = [''];
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.eql(['wiggle', 'it', 'just', 'a', 'little', 'bit']);
+  });
+
+  it('should handle an object', function () {
+    var Minson = require('../index');
+    var test = { key1: 'key1', key2: 'second key'};
+    var config = { key1: 'varchar', key2: 'varchar(255)'};
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.eql({ key1: 'key1', key2: 'second key'});
+  });
+
+  it('should handle json', function () {
+    var Minson = require('../index');
+    var test = { key1: 'key1', key2: 'second key'};
+    var config = 'json';
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.eql({ key1: 'key1', key2: 'second key'});
+  });
+
+  it('should handle unknown object', function () {
+    var Minson = require('../index');
+    var test = { key1: 'key1', key2: 'second key'};
+    var config = '';
+    Minson.bits = '';
+    Minson.decodePos = 0;
+
+    Minson._encode(config, test);
+    var result = Minson._decode(config);
+    expect(result).to.eql({ key1: 'key1', key2: 'second key'});
+  });
+
+  it('should generate config strings', function () {
+    var Minson = require('../index');
+    var test = {
+      myObject: {myKey: Minson.config(Minson.type.INT, 8)},
+      myInt: Minson.config(Minson.type.INT, 32),
+      myUint: Minson.config(Minson.type.UINT, 16),
+      myBigint: Minson.config(Minson.type.BIGINT, 64),
+      myBiguint: Minson.config(Minson.type.BIGUINT, 64),
+      myFloat: Minson.config(Minson.type.FLOAT, 64),
+      myEnum: Minson.config(Minson.type.ENUM, ['uno', 'dos', 'tres']),
+      myBool: Minson.config(Minson.type.BOOL),
+      myBoolTrue: Minson.config(Minson.type.BOOL, null, true),
+      myVarchar: Minson.config(Minson.type.VARCHAR),
+      myVarchar255: Minson.config(Minson.type.VARCHAR, 255),
+      myVarchar255Charset: Minson.config(Minson.type.VARCHAR, 255, null, Minson.charset.ALPHANUMERIC),
+      myJson: Minson.config(Minson.type.JSON),
+      myUnknown: Minson.config(''),
+      myArr: [Minson.config(Minson.type.INT, 8)],
+    };
+    
+    expect(test).to.eql({
+      myObject: {myKey: 'int(8)'},
+      myInt: 'int(32)',
+      myUint: 'uint(16)',
+      myBigint: 'bigint(64)',
+      myBiguint: 'biguint(64)',
+      myFloat: 'float(64)',
+      myEnum: 'enum("uno", "dos", "tres")',
+      myBool: 'bool',
+      myBoolTrue: 'bool[true]',
+      myVarchar: 'varchar',
+      myVarchar255: 'varchar(255)',
+      myVarchar255Charset: 'varchar(255){ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789}',
+      myJson: 'json',
+      myUnknown: '',
+      myArr: ['int(8)'],
+    });
+  });
+
+
 });
 
 
