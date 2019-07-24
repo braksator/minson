@@ -16,7 +16,7 @@ with integers that have a small maximum value, and length-limited strings.
 
 Will happily handle large strings, floats, big ints, and nested structures.
 
-> The catch is that to get the most out of Minson you have to define a 
+> The catch is that to get the most out of Minson you have to create a 
 > *template* that defines your data types. The template is like a key to unlock 
 > your data.
 
