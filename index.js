@@ -637,14 +637,18 @@ var Minson = module.exports =  {
         ALPHALOWER: 'abcdefghijklmnopqrstuvwxyz',
     },
 
-    configList: (list) => {
-        if (list !== undefined && Array.isArray(list)) {
-            list = list.map((val) => {
+    configValueFormat: (value) => {
+        if (value !== undefined && Array.isArray(value)) {
+            value = value.map((val) => {
                 val = Minson._unstring(val);
                 return typeof val == 'string' ? '"' + val + '"' : val;
             }).join(', ');
         }
-        return list;
+        else {
+            value = Minson._unstring(value);
+            value = typeof value == 'string' ? '"' + value + '"' : value;
+        }
+        return value;
     },
 
     config: (type, param, def, charset) => {
@@ -684,8 +688,8 @@ var Minson = module.exports =  {
             throw "Minson received invalid param " + param + " for type " + type;
         }
 
-        param = Minson.configList(param);
-        def = Minson.configList(def);
+        param = Minson.configValueFormat(param);
+        def = Minson.configValueFormat(def);
 
         return type + (param ? '(' + param + ')': '') + (def ? '[' + def + ']' : '') + (charset ? '{' + charset + '}' : '');
     }
