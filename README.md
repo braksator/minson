@@ -16,6 +16,25 @@ with integers that have a small maximum value, and length-limited strings.
 
 Will happily handle large strings, floats, big ints, and nested structures.
 
+## Output
+
+Minson creates a string that looks something like this:
+
+> HÿÿÿÓ W@ux£×\n=q`╗ÅFRV6²═'&÷vâ═f÷═§V×2═÷fW"FR═Æ§═Förà¶FÆ¶£6FÆ¶£&Ài§¢É#jËu ╔·²&öæR#£Â'Gvò#£"Â'F&VR#£7Þø qìÑÍÐÄèàÌ°ÑÍÐÈèÌÐÌÌÉô
+
+## MINSON vs JSON vs BSON
+
+|                     	| Output Length in chars 	| Output length in bytes 	|
+|---------------------	|------------------------	|------------------------	|
+| **Minified Object** 	| 308                    	| 308                    	|
+| **JSON**            	| 351                    	| 351                    	|
+| **BSON**            	| 369                    	| 361                    	|
+| **MINSON**          	| 151                    	| 202                    	|
+
+The test data used here is the input object from the test "should encode
+and decode" in this package.  With a well designed template and input
+data the results for Minson will be even better.
+
 ## Installation
 
 This is a Node.JS module available from the Node Package Manager (NPM).
@@ -159,7 +178,7 @@ range.
 | varchar                             | Long string                                                                                                                   | unlimited                         |
 | char                              	| Character                                                                                                                   	| 0 to 255 (by default)            	|
 | wchar                             	| Wide character up to 4 bytes                                                                                                 	| 0 to 4,294,967,295                |
-| json                                | Any value that can be stored in JSON                                                                                          | unlimited                         |
+| json                                | Any value serializable with JSON                                                                                              | unlimited                         |
 
 ### bool
 

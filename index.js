@@ -5,6 +5,7 @@
  * @file
  * Minson encoder/decoder.
  */
+
 const base64encode = str => Buffer.from(str, 'binary').toString('base64');
 const base64decode = str => Buffer.from(str, 'base64').toString('binary');
 
