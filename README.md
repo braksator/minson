@@ -8,7 +8,7 @@ Data serializer with minimal output.
 Serializes an object (or other variable) using a predefined template into a
 non-human readable output string that uses a minimal amount of characters.
 
-> WARNING: This package is new and still going through testing.  
+> WARNING: This package is relatively new - use with vigilant caution. 
 
 Designed for storage of app configs in text files, therefore works particularly
 well with multiple-choice values such as booleans and enums.  Also efficient
@@ -273,6 +273,12 @@ Size: 64 (required)
 
 For JavaScript [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) numbers.
 
+Example:
+```javascript
+// Configure a BigInt number
+'bigint(64)'
+```
+
 Aliases: bigint.
 
 ### biguint
@@ -283,6 +289,12 @@ Aliases: bigint.
 Size: 64 (required)
 
 For JavaScript [BigInt](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt) numbers.
+
+Example:
+```javascript
+// Configure an unsigned BigInt number
+'biguint(64)'
+```
 
 Aliases: biguint.
 
@@ -302,6 +314,12 @@ If the param is not supplied, a string of any length can be used.
 
 - This type supports an optional charset (See "Custom Charset")
 
+Example:
+```javascript
+// Configure a varchar
+'varchar'
+```
+
 Aliases: varchar, text, string.
 
 ### char
@@ -316,6 +334,12 @@ in length.
 - This type supports an optional charset and it is possible to use it to encode
 values of less than one byte (See "Custom Charset")
 
+Example:
+```javascript
+// Configure a char
+'char'
+```
+
 Aliases: char, byte.
 
 ### wchar
@@ -327,6 +351,12 @@ Param: (not applicable)
 
 Used for strings of exactly one multibyte character, which may be up to
 4-bytes in length. 
+
+Example:
+```javascript
+// Configure a wide char
+'wchar'
+```
 
 Aliases: wchar.
 
@@ -342,6 +372,12 @@ and stores it as a varchar. This is less efficient than selecting another
 type, and carries the same limitations as JSON.
 
 This is useful for encoding/decoding an object with unknown keys.
+
+Example:
+```javascript
+// Configure a json serializable variable
+'json'
+```
 
 Aliases: json.
 
@@ -518,4 +554,4 @@ the /coverage directory.
 https://github.com/braksator/minson
 
 In lieu of a formal style guide, take care to maintain the existing coding
-style. Add mocha tests for coverage and explicitly test bugs.
+style. Add tests for coverage and explicitly test bugs and features.
