@@ -75,6 +75,10 @@ var Minson = module.exports =  {
         if (config.type instanceof MinsonType) {
             config.type = config.type.type;
         }
+        
+        if (config.size !== undefined) {
+            config.param = param;
+        }
 
         if (param !== undefined) {
             config.param = param;
