@@ -51,6 +51,19 @@ var Minson = module.exports =  {
 
         'json': 'json',
     },
+    typedArrays: {
+        Int8Array: 'int(8)',
+        Uint8Array: 'uint(8)',
+        Uint8ClampedArray: 'uint(8)',
+        Int16Array: 'int(16)',
+        Uint16Array: 'uint(16)',
+        Int32Array: 'int(32)',
+        Uint32Array: 'uint(32)',
+        Float32Array: 'float(32)',
+        Float64Array: 'float(64)',
+        BigInt64Array: 'bigint(64)',
+        BigUint64Array: 'biguint(64)',
+    },
 
     typeFromAlias: (alias) => {
         if (!(alias in Minson.aliases)) {
@@ -65,6 +78,11 @@ var Minson = module.exports =  {
         // Before any parens or brackets.
         var type = unparsedConfig.match(/[^()\[\]\{\}]+/g);
         config.type = type[0];
+
+        if (config.type.toLowerCase() in Minson.typedArrays) {
+            config.handler = 'typedArray';
+        }
+
         // Get contents of optional parens.
         var param = unparsedConfig.match(/\(([^)]+)\)/);
         if (param && param[1]) {
@@ -81,10 +99,12 @@ var Minson = module.exports =  {
             config.charset = charset[1];
         }
 
-        config.handler = config.type = Minson.typeFromAlias(config.type.toLowerCase().replace(/[0-9]/g, ''));
+        if (config.handler != 'typedArray') {
+            config.handler = config.type = Minson.typeFromAlias(config.type.toLowerCase().replace(/[0-9]/g, ''));
 
-        if (['Int', 'Uint', 'Float', 'BigInt', 'BigUint'].indexOf(config.type) > -1) {
-            config.handler = 'number';
+            if (['Int', 'Uint', 'Float', 'BigInt', 'BigUint'].indexOf(config.type) > -1) {
+                config.handler = 'number';
+            }
         }
 
         return config;
@@ -652,6 +672,27 @@ var Minson = module.exports =  {
         return config instanceof WeakSet ? 
             new WeakSet(arrayDecode(Array.from(config))) : 
             new Set(arrayDecode(Array.from(config)));
+    },
+
+    _typedArrayConfig: (config) => {
+        var subConfig = [];
+        var subType = Minson.typedArrays[config.type];
+        if (config.default !== undefined) {
+            subType += '[' + config.default + ']';
+        }
+        config.param = parseInt(config.param ? config.param : 1);
+        for (var i = 0; i < config.param; ++i) {
+            subConfig.push(subType);
+        }
+        return subConfig;
+    },
+
+    typedArrayEncode: (config, input) => {
+        Minson._encode(Minson._typedArrayConfig(config), Array.from(input));
+    },
+
+    typedArrayDecode: (config) => {
+        return this[config.type].from(Minson._decode(Minson._typedArrayConfig(config)));
     },
 
     jsonEncode: (config, input) => {

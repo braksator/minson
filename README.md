@@ -175,9 +175,21 @@ If this isn't sufficient, and your data is serializable with JSON,
 you can use the *json* data type to include the data structure into a Minson
 encoded string.
 
-Minson cannot currently support [*Typed Arrays*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)
-due to the design of the templating format (oops!), though an equivalent is definitely
-possible using arrays with the corresponding data type configured.
+## Typed Arrays
+
+Minson can handle variables of [TypedArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray) types.
+
+These are provided to Minson's templates not like Data Structures, but like 
+Data Types, and will be exploded into their Array equivalent.
+
+For example specifying a configuration string of `'Int8Array'` will convert it
+to `['int(8)']` and specifying `Int8Array(3)[5]` will convert it to 
+`['int(8)[5]', 'int(8)[5]', int(8)[5]']`.  The correct TypedArray type will be
+restored during decoding.
+
+Not that unlike data types, the capitalization of the TypedArray type name is
+important.
+
 
 ## Data Types
 
