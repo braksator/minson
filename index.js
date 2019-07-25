@@ -32,9 +32,9 @@ var Minson = module.exports =  {
         //OBJECT:             new MinsonType({type: 'object', struct: true}),
         //ARRAY:              new MinsonType({type: 'array', struct: true}),
         //MAP:                new MinsonType({type: 'map', struct: true}),
-        //WEAKMAP:            new MinsonType({type: 'map', struct: true}),
+        //WEAKMAP:            new MinsonType({type: 'weakmap', handler: 'map', struct: true}),
         //SET:                new MinsonType({type: 'set', struct: true}),
-        //WEAKSET:            new MinsonType({type: 'set', struct: true}),
+        //WEAKSET:            new MinsonType({type: 'weakset', handler: 'set', struct: true}),
 
         BOOL:               new MinsonType({type: 'bool'}),
         ENUM:               new MinsonType({type: 'enum', paramRequired: true}),
