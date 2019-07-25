@@ -36,9 +36,9 @@ Given a JavaScript object value Minson creates a string that looks something lik
 | **BSON**            	| 361                   	| 361                    	|
 | **MINSON**          	| 151                    	| 202                    	|
 
-The test data used here is the input object from the test "should encode
+<small>The test data used here is the input object from the test "should encode
 and decode" in this package.  With a well designed template and input
-data the results for Minson will be even better.
+data the results for Minson will be even better.</small>
 
 ## Installation
 
@@ -156,7 +156,7 @@ data.
 
 ## Data Structures
 
-The following data structures are supported by Minson.
+The following data structures are supported by Minson templates.
 
 > [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
 >
@@ -175,7 +175,7 @@ If this isn't sufficient, and your data is serializable with JSON,
 you can use the *json* data type to include the data structure into a Minson
 encoded string.
 
-Minson cannot currently support (*Typed Arrays*)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray]
+Minson cannot currently support [*Typed Arrays*](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray)
 due to the design of the templating format (oops!), though an equivalent is definitely
 possible using arrays with the corresponding data type configured.
 
