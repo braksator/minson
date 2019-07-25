@@ -418,7 +418,7 @@ restored during decoding.
 
 > This feature currently has no test coverage
 
-### Variables of unknown or mixed type
+## Variables of unknown or mixed type
 
 This isn't an ideal usage of Minson, but you can supply an empty configuration
 string:
