@@ -33,7 +33,7 @@ Given a JavaScript object value Minson creates a string that looks something lik
 |---------------------	|------------------------	|------------------------	|
 | **Minified Object** 	| 308                    	| 308                    	|
 | **JSON**            	| 351                    	| 351                    	|
-| **BSON**            	| 369                    	| 361                    	|
+| **BSON**            	| 361                   	| 361                    	|
 | **MINSON**          	| 151                    	| 202                    	|
 
 The test data used here is the input object from the test "should encode
