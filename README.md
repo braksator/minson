@@ -512,7 +512,7 @@ generate configuration objects directly using `Minson.config()`.
 var cfgStr = Minson.config(Minson.type.TYPE, param, default, charset);
 ```
 
-This may be preferable to use this in order to catch configuration issues
+It may be preferable to use this in order to catch configuration issues
 early.
 
 Allowed values for TYPE are: 
@@ -520,7 +520,9 @@ BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, WCHAR, VARCHAR, JSON,
 INT8ARRAY, UINT8ARRAY, UINT8CLAMPEDARRAY, INT16ARRAY, UINT16ARRAY, INT32ARRAY,
 UINT32ARRAY, FLOAT32ARRAY, FLOAT64ARRAY, BIGINT64ARRAY, BIGUINT64ARRAY
 
+Example:
 ```javascript
+// Configure an enum.
 var cfgStr = Minson.config(Minson.type.ENUM, ['one', 'two', 'three'], 'three');
 ```
 
