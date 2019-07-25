@@ -606,10 +606,6 @@ var Minson = module.exports =  {
     
     objectEncode: (config, input) => {
         for (var key in config) {
-            var key = Minson._unstring(key);
-            if (typeof key !== 'string') {
-                throw "Minson expected object key " + key + " to be a string";
-            }
             Minson._encode(config[key], input[key]);            
         }
     },
@@ -617,10 +613,6 @@ var Minson = module.exports =  {
     objectDecode: (config) => {
         var out = {};
         for (var key in config) {
-            var key = Minson._unstring(key);
-            if (typeof key !== 'string') {
-                throw "Minson expected object key " + key + " to be a string";
-            }
             out[key] = Minson._decode(config[key]);
         }
         return out;

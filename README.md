@@ -105,7 +105,6 @@ var template = {
   access: 'bool',
 };
 ```
-*Note: Minson will not encode objects where numeric key names exist*
 
 If your data is an array, the template is also an array.
 
