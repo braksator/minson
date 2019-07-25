@@ -51,6 +51,7 @@ var Minson = module.exports =  {
 
         'json': 'json',
     },
+    
     typedArrays: {
         Int8Array: 'int(8)',
         Uint8Array: 'uint(8)',

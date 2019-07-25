@@ -545,6 +545,11 @@ The following TypedArray types are also supported (See "Typed Arrays"):
 INT8ARRAY, UINT8ARRAY, UINT8CLAMPEDARRAY, INT16ARRAY, UINT16ARRAY, INT32ARRAY,
 UINT32ARRAY, FLOAT32ARRAY, FLOAT64ARRAY, BIGINT64ARRAY, BIGUINT64ARRAY
 
+*Note: That while Minson.config() currently returns a string consistent with 
+the internal usage of such strings, this is a regrettable design decision, 
+and in the future may return a class instance.  Avoid relying on the return
+value being a string.*
+
 ```javascript
 var cfgStr = Minson.config(Minson.type.ENUM, ['one', 'two', 'three'], 'three');
 ```
