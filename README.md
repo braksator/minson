@@ -561,6 +561,20 @@ If you prefer the terminology, Minson.encode() is aliased with
 Minson.stringify() and Minson.serialize().  Similarly Minson.decode() is
 aliased with Minson.parse() and Minson.unserialize().
 
+## Configuring Data Structures Without A Template Of The Structure
+
+It would be nice to specify Objects, Arrays, Sets, and Maps through the config string
+or Minson.config() methods.  It would be convenient to define fixed-length Arrays 
+without repeating the data type n-times inside an actual array. It would be 
+great if fixed-length Sets were supported (repeating a string n-times in a Set
+doesn't work too great!  Woops!).
+
+But currently the only implementation of data structures requires templating
+using the data structure itself.  This makes it easy to specify the child
+elements, such as Object keys.
+
+*It may be possible to handle this functionality in the future.*
+
 ## Unexpected Values
 
 If an object or map contains keys that are not configured in the template, they will
