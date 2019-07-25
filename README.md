@@ -154,9 +154,28 @@ since it's possible your data structure will change, you should consider maintai
 revisions of these templates in your project in order to access older encoded
 data.
 
+## Data Structures
+
+The following data structures are supported by Minson.
+
+> (Object)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object]
+> (Array)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array]
+> (Map)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map]
+> (WeakMap)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap]
+> (Set)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set]
+> (WeakSet)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet]
+
+If this isn't sufficient, and your data is serializable with JSON,
+you can use the *json* data type to include the data structure into a Minson
+encoded string.
+
+Minson cannot currently support (*Typed Arrays*)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray]
+due to the design of the templating format (oops!), though an equivalent is definitely
+possible using arrays with the corresponding data type configured.
+
 ## Data Types
 
-In addition to Objects and Arrays, the following is a list of supported data
+In addition to data structures, the following is a list of supported data
 types. Your goal should be to choose the smallest representation of your 
 data. If you're storing data from a form that allows a selection from a 
 predefined list of options; use an enum over a varchar, and choose integer 
@@ -546,7 +565,7 @@ aliased with Minson.parse() and Minson.unserialize().
 
 ## Unexpected Values
 
-If an object contains keys that are not configured in the template, they will
+If an object or map contains keys that are not configured in the template, they will
 be ignored, not included in the encoded output, and not present in the decoded
 variable.  If you anticipate unexpected keys you should instead use the *json* data
 type.

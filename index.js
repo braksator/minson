@@ -258,6 +258,12 @@ var Minson = module.exports =  {
                 throw "Minson cannot encode configured variable of type " + config.type;
             }
         }
+        else if (config instanceof Map) {
+            Minson.mapEncode(config, input);
+        }
+        else if (config instanceof Set) {
+            Minson.setEncode(config, input);
+        }
         else if (Array.isArray(config)) {
             Minson.arrayEncode(config, input);
         }
@@ -282,6 +288,12 @@ var Minson = module.exports =  {
             else {
                 throw "Minson cannot encode configured variable of type " + config.type;
             }
+        }
+        else if (config instanceof Map || config instanceof WeakMap) {
+            out = Minson.mapDecode(config);
+        }
+        else if (config instanceof Set || config instanceof WeakSet) {
+            out = Minson.setDecode(config);
         }
         else if (Array.isArray(config)) {
             out = Minson.arrayDecode(config);
@@ -616,6 +628,30 @@ var Minson = module.exports =  {
             out[key] = Minson._decode(config[key]);
         }
         return out;
+    },
+
+    mapEncode: (config, input) => {
+        for (var [key, value] of config) {
+            Minson._encode(value, input.get(key)); 
+        }
+    },
+
+    mapDecode: (config) => {
+        var out = config instanceof WeakMap ? new WeakMap() : new Map();
+        for (var [key, value] of config) {
+            out.set(key, Minson._decode(value));
+        }
+        return out;
+    },
+
+    setEncode: (config, input) => {
+        Minson.arrayEncode(Array.from(config), Array.from(input));
+    },
+
+    setDecode: (config) => {
+        return config instanceof WeakSet ? 
+            new WeakSet(arrayDecode(Array.from(config))) : 
+            new Set(arrayDecode(Array.from(config)));
     },
 
     jsonEncode: (config, input) => {
