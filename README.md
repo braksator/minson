@@ -158,12 +158,12 @@ data.
 
 The following data structures are supported by Minson.
 
-> (Object)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object]
-> (Array)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array]
-> (Map)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map]
-> (WeakMap)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap]
-> (Set)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set]
-> (WeakSet)[https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet]
+> [Object](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object)
+> [Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)
+> [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
+> [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
+> [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
+> [WeakSet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet)
 
 If this isn't sufficient, and your data is serializable with JSON,
 you can use the *json* data type to include the data structure into a Minson
