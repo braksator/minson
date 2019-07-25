@@ -175,21 +175,6 @@ If this isn't sufficient, and your data is serializable with JSON,
 you can use the *json* data type to include the data structure into a Minson
 encoded string.
 
-## Typed Arrays
-
-Minson can handle variables of [TypedArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray) types.
-
-These are provided to Minson's templates not like Data Structures, but like 
-Data Types, and will be exploded into their Array equivalent.
-
-For example specifying a configuration string of `'Int8Array'` will convert it
-to `['int(8)']` and specifying `Int8Array(3)[5]` will convert it to 
-`['int(8)[5]', 'int(8)[5]', 'int(8)[5]']`.  The correct TypedArray type will be
-restored during decoding.
-
-Note: Unlike data types, the capitalization of the TypedArray type name is
-important.
-
 ## Data Types
 
 In addition to data structures, the following is a list of supported data
@@ -243,8 +228,6 @@ Examples:
 'bool("on", "off")'
 ```
 
-Aliases: bool, boolean.
-
 ### enum
 
 **Enumerated**
@@ -265,8 +248,6 @@ Examples:
 'enum("red", "blue", "green")'
 ```
 
-Aliases: enum.
-
 ### int
 
 **Signed integer**
@@ -284,8 +265,6 @@ Example:
 'int(16)'
 ```
 
-Aliases: int, i, integer, signed, signed int, signed integer.
-
 ### uint
 
 **Unsigned integer**
@@ -301,8 +280,6 @@ Example:
 // Configure integer with values from 0 to 255
 'uint(8)'
 ```
-
-Aliases: uint, u, unsigned, unsigned int, unsigned integer.
 
 ### float
 
@@ -322,8 +299,6 @@ Example:
 'float(32)'
 ```
 
-Aliases: float, double, decimal.
-
 ### bigint
 
 **Signed BigInt**
@@ -339,8 +314,6 @@ Example:
 'bigint(64)'
 ```
 
-Aliases: bigint.
-
 ### biguint
 
 **Unsigned BigInt**
@@ -355,8 +328,6 @@ Example:
 // Configure an unsigned BigInt number
 'biguint(64)'
 ```
-
-Aliases: biguint.
 
 ### varchar
 
@@ -380,8 +351,6 @@ Example:
 'varchar'
 ```
 
-Aliases: varchar, text, string.
-
 ### char
 
 **Character**
@@ -400,8 +369,6 @@ Example:
 'char'
 ```
 
-Aliases: char, byte.
-
 ### wchar
 
 **Wide character**
@@ -417,8 +384,6 @@ Example:
 // Configure a wide char
 'wchar'
 ```
-
-Aliases: wchar.
 
 ### json
 
@@ -439,7 +404,19 @@ Example:
 'json'
 ```
 
-Aliases: json.
+## Typed Arrays
+
+Minson can also handle variables of [TypedArray](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray) types.
+
+These are provided to Minson's templates not like Data Structures, but like 
+Data Types, and will be exploded into their Array equivalent.
+
+For example specifying a configuration string of `'int8array'` will convert it
+to `['int(8)']` and specifying `int8array(3)[5]` will convert it to 
+`['int(8)[5]', 'int(8)[5]', 'int(8)[5]']`.  The correct TypedArray type will be
+restored during decoding.
+
+> This feature currently has no test coverage
 
 ### Variables of unknown or mixed type
 
@@ -526,29 +503,22 @@ Valid *format* values are the following strings:
 
 Just remember to set this the same way for encode() and decode().
 
-## Generating Configuration Strings
+## Generating Configuration
 
 An alternative to typing `'type(param)[default]{charset}'` strings is to
-generate these strings using `Minson.config()`.
+generate configuration objects directly using `Minson.config()`.
 
 ```javascript
 var cfgStr = Minson.config(Minson.type.TYPE, param, default, charset);
 ```
 
-This will perform some basic error checking and sanitization, and may be 
-preferable to use this in order to catch configuration issues early.
+This may be preferable to use this in order to catch configuration issues
+early.
 
 Allowed values for TYPE are: 
-BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, WCHAR, VARCHAR, JSON
-
-The following TypedArray types are also supported (See "Typed Arrays"):
+BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, WCHAR, VARCHAR, JSON,
 INT8ARRAY, UINT8ARRAY, UINT8CLAMPEDARRAY, INT16ARRAY, UINT16ARRAY, INT32ARRAY,
 UINT32ARRAY, FLOAT32ARRAY, FLOAT64ARRAY, BIGINT64ARRAY, BIGUINT64ARRAY
-
-*Note: That while Minson.config() currently returns a string consistent with 
-the internal usage of such strings, this is a regrettable design decision, 
-and in the future may return a class instance.  Avoid relying on the return
-value being a string.*
 
 ```javascript
 var cfgStr = Minson.config(Minson.type.ENUM, ['one', 'two', 'three'], 'three');

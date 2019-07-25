@@ -75,7 +75,7 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result).to.equal(false);
   });
-  
+ 
   it('should handle boolean value1', function () {
     var Minson = require('../index');
     var testBool = 'yes';
@@ -89,7 +89,7 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result).to.equal('yes');
   });
-
+ 
   it('should handle boolean value2', function () {
     var Minson = require('../index');
     var testBool = 'no';
@@ -131,7 +131,6 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result).to.equal("baz");
   });
-
 
   it('should handle int(8)', function () {
     var Minson = require('../index');
@@ -217,7 +216,7 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result).to.equal(21021);
   });
-  
+
   it('should handle int(32) negative', function () {
     var Minson = require('../index');
     var test = "-210213";
@@ -242,7 +241,6 @@ describe('Minson', function () {
     expect(result).to.equal(56656);
   });
 
-  
   it('should handle float(32)', function () {
     var Minson = require('../index');
     var test = 123.456;
@@ -266,7 +264,6 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result).to.be.closeTo(123.456, 0.001);
   });
-
   it('should handle float(32) negative', function () {
     var Minson = require('../index');
     var test = -23.456;
@@ -278,7 +275,6 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result).to.be.closeTo(-23.456, 0.001);
   });
-  
   
   it('should handle float(64)', function () {
     var Minson = require('../index');
@@ -315,7 +311,7 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result.toString()).to.equal(BigInt('-46574936470').toString());
   });
-  
+
   it('should handle unknown bigint(64) negative', function () {
     var Minson = require('../index');
     var test = -46574936470n;
@@ -327,7 +323,7 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result.toString()).to.equal(BigInt('-46574936470').toString());
   });
-  
+
   it('should handle biguint(64)', function () {
     var Minson = require('../index');
     var test = 90199254740900n;
@@ -495,7 +491,7 @@ describe('Minson', function () {
     var result = Minson._decode(config);
     expect(result).to.eql(['wiggle', 'it', 'just', 'a', 'little', 'bit']);
   });
-  
+
   it('should handle unknown variable length array', function () {
     var Minson = require('../index');
     var test = ['wiggle', 'it', 'just', 'a', 'little', 'bit'];
@@ -547,27 +543,27 @@ describe('Minson', function () {
   it('should generate config strings', function () {
     var Minson = require('../index');
     var test = {
-      myObject: {myKey: Minson.config(Minson.type.INT, 8)},
-      myInt: Minson.config(Minson.type.INT, 32),
-      myUint: Minson.config(Minson.type.UINT, 16),
-      myBigint: Minson.config(Minson.type.BIGINT, 64),
-      myBiguint: Minson.config(Minson.type.BIGUINT, 64),
-      myFloat: Minson.config(Minson.type.FLOAT, 64),
-      myEnum: Minson.config(Minson.type.ENUM, ['uno', 'dos', 'tres']),
-      myBool: Minson.config(Minson.type.BOOL),
-      myBoolTrue: Minson.config(Minson.type.BOOL, null, true),
-      myVarchar: Minson.config(Minson.type.VARCHAR),
-      myVarchar255: Minson.config(Minson.type.VARCHAR, 255),
-      myVarchar255Charset: Minson.config(Minson.type.VARCHAR, 255, null, Minson.charset.ALPHANUMERIC),
-      myVarchar255CharsetObj: Minson.config({
+      myObject: {myKey: Minson.configToString(Minson.config(Minson.type.INT, 8))},
+      myInt: Minson.configToString(Minson.config(Minson.type.INT, 32)),
+      myUint: Minson.configToString(Minson.config(Minson.type.UINT, 16)),
+      myBigint: Minson.configToString(Minson.config(Minson.type.BIGINT, 64)),
+      myBiguint: Minson.configToString(Minson.config(Minson.type.BIGUINT, 64)),
+      myFloat: Minson.configToString(Minson.config(Minson.type.FLOAT, 64)),
+      myEnum: Minson.configToString(Minson.config(Minson.type.ENUM, ['uno', 'dos', 'tres'])),
+      myBool: Minson.configToString(Minson.config(Minson.type.BOOL)),
+      myBoolTrue: Minson.configToString(Minson.config(Minson.type.BOOL, null, true)),
+      myVarchar: Minson.configToString(Minson.config(Minson.type.VARCHAR)),
+      myVarchar255: Minson.configToString(Minson.config(Minson.type.VARCHAR, 255)),
+      myVarchar255Charset: Minson.configToString(Minson.config(Minson.type.VARCHAR, 255, null, Minson.charset.ALPHANUMERIC)),
+      myVarchar255CharsetObj: Minson.configToString(Minson.config({
         type: Minson.type.VARCHAR,
         param: 255,
         default: 'abc123',
         charset: Minson.charset.ALPHANUMERIC,
-      }),
-      myJson: Minson.config(Minson.type.JSON),
-      myUnknown: Minson.config(''),
-      myArr: [Minson.config(Minson.type.INT, 8)],
+      })),
+      myJson: Minson.configToString(Minson.config(Minson.type.JSON)),
+      myUnknown: Minson.configToString(Minson.config('')),
+      myArr: [Minson.configToString(Minson.config(Minson.type.INT, 8))],
     };
     
     expect(test).to.eql({
@@ -648,7 +644,7 @@ describe('Minson', function () {
     expect(result.myBigint.toString()).to.equal(input.myBigint.toString());
     expect(result.myBiguint.toString()).to.equal(input.myBiguint.toString());
   });
-  
+
   it('should encode and decode object with array', function () {
     var Minson = require('../index');
     var template = {
