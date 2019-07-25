@@ -184,7 +184,7 @@ Data Types, and will be exploded into their Array equivalent.
 
 For example specifying a configuration string of `'Int8Array'` will convert it
 to `['int(8)']` and specifying `Int8Array(3)[5]` will convert it to 
-`['int(8)[5]', 'int(8)[5]', int(8)[5]']`.  The correct TypedArray type will be
+`['int(8)[5]', 'int(8)[5]', 'int(8)[5]']`.  The correct TypedArray type will be
 restored during decoding.
 
 Not that unlike data types, the capitalization of the TypedArray type name is
