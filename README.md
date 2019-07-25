@@ -541,6 +541,10 @@ preferable to use this in order to catch configuration issues early.
 Allowed values for TYPE are: 
 BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, WCHAR, VARCHAR, JSON
 
+The following TypedArray types are also supported (See "Typed Arrays"):
+INT8ARRAY, UINT8ARRAY, UINT8CLAMPEDARRAY, INT16ARRAY, UINT16ARRAY, INT32ARRAY,
+UINT32ARRAY, FLOAT32ARRAY, FLOAT64ARRAY, BIGINT64ARRAY, BIGUINT64ARRAY
+
 ```javascript
 var cfgStr = Minson.config(Minson.type.ENUM, ['one', 'two', 'three'], 'three');
 ```

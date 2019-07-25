@@ -715,6 +715,17 @@ var Minson = module.exports =  {
         WCHAR: 'wchar',
         VARCHAR: 'varchar',
         JSON: 'json',
+        INT8ARRAY: 'Int8Array',
+        UINT8ARRAY: 'Uint8Array',
+        UINT8CLAMPEDARRAY: 'Uint8ClampedArray',
+        INT16ARRAY: 'Int16Array',
+        UINT16ARRAY: 'Uint16Array',
+        INT32ARRAY: 'Int32Array',
+        UINT32ARRAY: 'Uint32Array',
+        FLOAT32ARRAY: 'Float32Array',
+        FLOAT64ARRAY: 'Float64Array',
+        BIGINT64ARRAY: 'BigInt64Array',
+        BIGUINT64ARRAY: 'BigUint64Array',
     },
 
     charset: {
