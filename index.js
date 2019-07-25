@@ -79,7 +79,7 @@ var Minson = module.exports =  {
         var type = unparsedConfig.match(/[^()\[\]\{\}]+/g);
         config.type = type[0];
 
-        if (config.type.toLowerCase() in Minson.typedArrays) {
+        if (config.type in Minson.typedArrays) {
             config.handler = 'typedArray';
         }
 

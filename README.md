@@ -187,9 +187,8 @@ to `['int(8)']` and specifying `Int8Array(3)[5]` will convert it to
 `['int(8)[5]', 'int(8)[5]', 'int(8)[5]']`.  The correct TypedArray type will be
 restored during decoding.
 
-Not that unlike data types, the capitalization of the TypedArray type name is
+Note: Unlike data types, the capitalization of the TypedArray type name is
 important.
-
 
 ## Data Types
 
