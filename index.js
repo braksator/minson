@@ -66,6 +66,7 @@ var Minson = module.exports =  {
         ALPHA: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
         ALPHAUPPER: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
         ALPHALOWER: 'abcdefghijklmnopqrstuvwxyz',
+        SYMBOLS: '~`!@#£€$¢¥§.%°^&*()-_+={}[]|\\/:;"\'<>,.?',
     },
 
     config: (type, param, def, charset, children) => {

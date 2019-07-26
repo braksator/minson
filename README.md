@@ -641,7 +641,7 @@ var cfgStr = Minson.config({
 
 You can also use `Minson.charset.CHARSET` to supply a predefined charset.  
 Available values for CHARSET are:
-ALPHANUMERIC, NUMERIC, HEXADECIMAL, ALPHA, ALPHAUPPER, ALPHALOWER
+ALPHANUMERIC, NUMERIC, HEXADECIMAL, ALPHA, ALPHAUPPER, ALPHALOWER, SYMBOLS
 
 You can concatenate multiple charsets or perform other string operations
 on them.
