@@ -166,8 +166,6 @@ The following data structures are supported by Minson templates.
 >
 > [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
 >
-> [WeakSet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet)
->
 
 If this isn't sufficient, and your data is serializable with JSON,
 you can use the *json* data type to include the data structure into a Minson
@@ -268,27 +266,6 @@ new Set([
   Minson.config(Minson.type.INT, 8),
 ])
 ```
-
-### weakset
-
-**WeakSet**
-
-A WeakSet is like a Set, but is for holding Objects.  
-
-Examples:
-```javascript
-// Configure a weakset using a WeakSet() template. Notice the cheeky 
-// capitilzation and whitespace changes to avoid Set() omitting duplicates.
-new WeakSet([{type: 'object'}, {type: 'Object'}])
-
-// Configure a weakset using a WeakSet() template and the config generator 
-// features. (See "Generating Configuration")
-new WeakSet([Minson.config(Minson.type.OBJECT), Minson.config(Minson.config.OBJECT)])
-
-// Configure a weakset using a configuration string.
-'weakset<object, object>'
-```
-
 
 ## Data Types
 
@@ -629,9 +606,10 @@ It may be preferable to use this in order to catch configuration issues
 early.
 
 Allowed values for TYPE are: 
-ARRAY, SET, WEAKSET, BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, WCHAR, VARCHAR, JSON,
-INT8ARRAY, UINT8ARRAY, UINT8CLAMPEDARRAY, INT16ARRAY, UINT16ARRAY, INT32ARRAY,
-UINT32ARRAY, FLOAT32ARRAY, FLOAT64ARRAY, BIGINT64ARRAY, BIGUINT64ARRAY
+OBJECT, ARRAY, MAP, SET, BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, 
+WCHAR, VARCHAR, JSON, INT8ARRAY, UINT8ARRAY, UINT8CLAMPEDARRAY, INT16ARRAY,
+UINT16ARRAY, INT32ARRAY, UINT32ARRAY, FLOAT32ARRAY, FLOAT64ARRAY,
+BIGINT64ARRAY, BIGUINT64ARRAY
 
 Example:
 ```javascript

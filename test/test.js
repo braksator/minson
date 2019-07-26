@@ -782,42 +782,6 @@ describe('Minson', function () {
     expect(result).to.eql(input);
   });
 
-  it('should encode and decode fixed-length weaksets', function () {
-    var Minson = require('../index');
-    var template = new WeakSet([{type: 'object'}, {type: 'Object'}]);
-
-    var input = new WeakSet([{a: 32}, {a: 43}]);
-
-    var out = Minson.encode(template, input);
-    var result = Minson.decode(template, out);
-
-    expect(result).to.eql(input);
-  });
-
-  it('should encode and decode weaksets with generated config', function () {
-    var Minson = require('../index');
-    var template = new WeakSet([Minson.config(Minson.type.OBJECT), Minson.config(Minson.type.OBJECT)]);
-
-    var input = new WeakSet([{a: 32}, {a: 43}]);
-
-    var out = Minson.encode(template, input);
-    var result = Minson.decode(template, out);
-
-    expect(result).to.eql(input);
-  });
-
-  it('should encode and decode weaksets with string config', function () {
-    var Minson = require('../index');
-    var template = 'weakset<object, object>';
-
-    var input = new WeakSet([{a: 32}, {a: 43}]);
-
-    var out = Minson.encode(template, input);
-    var result = Minson.decode(template, out);
-
-    expect(result).to.eql(input);
-  });
-  
   it('should encode and decode maps', function () {
     var Minson = require('../index');
     var template = new Map([['aString', 'varchar'], ['aNumber', 'int(32)']]);

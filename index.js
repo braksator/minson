@@ -33,7 +33,6 @@ var Minson = module.exports =  {
         ARRAY:              new MinsonType({type: 'array', struct: true}),
         MAP:                new MinsonType({type: 'map', struct: true}),
         SET:                new MinsonType({type: 'set', struct: true}),
-        WEAKSET:            new MinsonType({type: 'weakset', handler: 'set', struct: true}),
 
         BOOL:               new MinsonType({type: 'bool'}),
         ENUM:               new MinsonType({type: 'enum', paramRequired: true}),
@@ -290,7 +289,7 @@ var Minson = module.exports =  {
         else if (config instanceof Map) {
             handler = 'map';
         }
-        else if (config instanceof Set || config instanceof WeakSet) {
+        else if (config instanceof Set) {
             handler = 'set';
         }
         else if (Array.isArray(config)) {
@@ -680,9 +679,7 @@ var Minson = module.exports =  {
     },
 
     setDecode: (config) => {
-        return config instanceof WeakSet ? 
-            new WeakSet(Minson.arrayDecode(Array.from(config))) : 
-            new Set(Minson.arrayDecode(Array.from(config)));
+        return new Set(Minson.arrayDecode(Array.from(config)));
     },
 
     _typedArrayConfig: (config) => {
