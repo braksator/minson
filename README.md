@@ -259,11 +259,11 @@ new Set(['int(32)', 'Int(32)', 'INt(32)', 'int (32)', 'int(32) '])
 // Configure a set of 5 numbers using a Set() template and the config 
 // generator features.  (See "Generating Configuration")
 new Set([
-  Minson.config(Minson.type.INT, 8),
-  Minson.config(Minson.type.INT, 8),
-  Minson.config(Minson.type.INT, 8),
-  Minson.config(Minson.type.INT, 8),
-  Minson.config(Minson.type.INT, 8),
+  Minson.config(Minson.type.INT, 32),
+  Minson.config(Minson.type.INT, 32),
+  Minson.config(Minson.type.INT, 32),
+  Minson.config(Minson.type.INT, 32),
+  Minson.config(Minson.type.INT, 32),
 ])
 ```
 
