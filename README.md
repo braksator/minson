@@ -237,7 +237,7 @@ new Map([['aString', 'varchar'], ['aNumber', 'int(32)']])
 
 **WeakMap**
 
-Ussage is similar to map (See "map")
+Usage is similar to map (See "map")
 
 ### set
 
