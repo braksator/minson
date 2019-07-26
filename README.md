@@ -197,7 +197,7 @@ Example:
 
 Arrays hold a list of values.  The template will define each array element
 as a template or configuration string for the data type or structure that 
-will be provided in that array position in the correponding input data.
+will be provided in that array position in the corresponding input data.
 If only a single element is templated it will be assumed that the input data
 array can be of any size and each element will be of the same data type or 
 data structure.
