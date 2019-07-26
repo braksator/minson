@@ -692,6 +692,22 @@ describe('Minson', function () {
 
     expect(result).to.eql(input);
   });
+  
+  it('should encode and decode nested arrays supplied with string config', function () {
+    var Minson = require('../index');
+    var template = {
+      myArray: 'array(2)<int(8), array<varchar>>',
+    };
+
+    var input = {
+      myArray: [23, ['nested', 'array', 'with', 'more', 'elements']],
+    };
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
 
   it('should encode and decode arrays supplied with string config', function () {
     var Minson = require('../index');
@@ -711,6 +727,121 @@ describe('Minson', function () {
 
     expect(result).to.eql(input);
   });
+
+  it('should encode and decode objects supplied with string config', function () {
+    var Minson = require('../index');
+    var template = 'object<key1: varchar, key2: varchar>';
+
+    var input = {
+      key1: 'one value',
+      key2: 'another value',
+    };
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+  
+  it('should encode and decode sets', function () {
+    var Minson = require('../index');
+    var template = new Set(['int(8)']);
+
+    var input = new Set([32, 43]);
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+  
+  it('should encode and decode fixed-length sets', function () {
+    var Minson = require('../index');
+    var template = new Set(['int(8)', 'Int(8)']);
+
+    var input = new Set([32, 43]);
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
+  it('should encode and decode fixed-length generated sets', function () {
+    var Minson = require('../index');
+    var template = new Set([
+        Minson.config(Minson.type.INT, 8), 
+        Minson.config(Minson.type.INT, 8), 
+    ]);
+
+    var input = new Set([32, 43]);
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
+  it('should encode and decode fixed-length weaksets', function () {
+    var Minson = require('../index');
+    var template = new WeakSet([{type: 'object'}, {type: 'Object'}]);
+
+    var input = new WeakSet([{a: 32}, {a: 43}]);
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
+  it('should encode and decode weaksets with generated config', function () {
+    var Minson = require('../index');
+    var template = new WeakSet([Minson.config(Minson.type.OBJECT), Minson.config(Minson.type.OBJECT)]);
+
+    var input = new WeakSet([{a: 32}, {a: 43}]);
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
+  it('should encode and decode weaksets with string config', function () {
+    var Minson = require('../index');
+    var template = 'weakset<object, object>';
+
+    var input = new WeakSet([{a: 32}, {a: 43}]);
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+  
+  it('should encode and decode maps', function () {
+    var Minson = require('../index');
+    var template = new Map([['aString', 'varchar'], ['aNumber', 'int(32)']]);
+
+    var input = new Map([['aString', 'a string'], ['aNumber', 343]]);
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
+  it('should encode and decode maps with string config', function () {
+    var Minson = require('../index');
+    var template = 'map<aString: varchar, aNumber: int(32)>';
+
+    var input = new Map([['aString', 'a string'], ['aNumber', 343]]);
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
 });
 
 

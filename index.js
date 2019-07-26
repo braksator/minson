@@ -29,10 +29,9 @@ var Minson = module.exports =  {
     bits: '',
 
     type: {
-        //OBJECT:             new MinsonType({type: 'object', struct: true}),
+        OBJECT:             new MinsonType({type: 'object', struct: true}),
         ARRAY:              new MinsonType({type: 'array', struct: true}),
-        //MAP:                new MinsonType({type: 'map', struct: true}),
-        //WEAKMAP:            new MinsonType({type: 'weakmap', handler: 'map', struct: true}),
+        MAP:                new MinsonType({type: 'map', struct: true}),
         SET:                new MinsonType({type: 'set', struct: true}),
         WEAKSET:            new MinsonType({type: 'weakset', handler: 'set', struct: true}),
 
@@ -70,7 +69,7 @@ var Minson = module.exports =  {
         ALPHALOWER: 'abcdefghijklmnopqrstuvwxyz',
     },
 
-    config: (type, param, def, charset) => {
+    config: (type, param, def, charset, children) => {
         var config = typeof type === 'object' ? type : {type: type};
         if (config.type instanceof MinsonType) {
             config.type = config.type.type;
@@ -88,6 +87,9 @@ var Minson = module.exports =  {
         }
         if (charset !== undefined) {
             config.charset = charset;
+        }
+        if (children !== undefined) {
+            config.children = children;
         }
 
         return Minson.processConfig(new MinsonConfig(config));
@@ -116,7 +118,24 @@ var Minson = module.exports =  {
     configToString(config) {
         var param = Minson._paramToString(config.param);
         var def = Minson._paramToString(config.default);
-        var children = Minson._paramToString(config.children);
+        if (config.children) {
+            if (typeof config.children == 'object') {
+                var children = [];
+                for (key in config.children) {
+                    children.push(key + ': ' + Minson.configToString(config.children[key]));
+                }
+                config.children = children.join(', ');
+            }
+            else if (config.children instanceof Map) {                
+                for (var [key, value] of config.children) {
+                    children.push(key + ': ' + Minson.configToString(value));
+                }
+                config.children = children.join(', ');
+            }            
+            else {
+                config.children = Minson._paramToString(config.children);
+            }
+        }
         return config.type.toLowerCase() 
             + (param ? '(' + param + ')': '') 
             + (def ? '[' + def + ']' : '') 
@@ -161,7 +180,7 @@ var Minson = module.exports =  {
                 accumulator[accumulator.length - 1] += char;
             }
         }
-        config.type = accumulator[0];
+        config.type = accumulator[0].trim();
         
         if (config.param) {
             config.param = Minson._stringToParam(config.param);
@@ -171,13 +190,34 @@ var Minson = module.exports =  {
         }
         if (config.children) {
             config.children = Minson._stringToParam(config.children);
-            if (Array.isArray(config.children)) {
-                for (var i = 0; i < config.children.length; ++i) {
-                    config.children[i] = Minson.stringToConfig(config.children[i]);
+            if (config.type.toLowerCase() == 'object') {
+                if (!Array.isArray(config.children)) {
+                    config.children = [config.children];
                 }
+                var children = {};
+                for (var i = 0; i < config.children.length; ++i) {
+                    var explode = config.children[i].split(':');
+                    children[explode[0].trim()] = Minson.stringToConfig(explode[1].trim());
+                }
+                config.children = children;
+            }
+            else if (config.type.toLowerCase() == 'map') {
+                var children = new Map();
+                for (var i = 0; i < config.children.length; ++i) {
+                    var explode = config.children[i].split(':');
+                    children.set(explode[0].trim(), Minson.stringToConfig(explode[1].trim()));
+                }
+                config.children = children;
             }
             else {
-                config.children = Minson.stringToConfig(config.children);
+                if (Array.isArray(config.children)) {
+                    for (var i = 0; i < config.children.length; ++i) {
+                        config.children[i] = Minson.stringToConfig(config.children[i]);
+                    }
+                }
+                else {
+                    config.children = Minson.stringToConfig(config.children);
+                }
             }
         }
         
@@ -247,7 +287,7 @@ var Minson = module.exports =  {
         if (config instanceof MinsonConfig) {
             handler = config.handler ? config.handler : config.type ? config.type : 'unknown';
         }
-        else if (config instanceof Map || config instanceof WeakMap) {
+        else if (config instanceof Map) {
             handler = 'map';
         }
         else if (config instanceof Set || config instanceof WeakSet) {
@@ -595,12 +635,18 @@ var Minson = module.exports =  {
     },
     
     objectEncode: (config, input) => {
+        if (config instanceof MinsonConfig && config.children) {
+            config = config.children;
+        }
         for (var key in config) {
             Minson._encode(config[key], input[key]);            
         }
     },
 
     objectDecode: (config) => {
+        if (config instanceof MinsonConfig && config.children) {
+            config = config.children;
+        }
         var out = {};
         for (var key in config) {
             out[key] = Minson._decode(config[key]);
@@ -609,13 +655,20 @@ var Minson = module.exports =  {
     },
 
     mapEncode: (config, input) => {
+        if (config instanceof MinsonConfig && config.children) {
+            config = config.children;
+        }
         for (var [key, value] of config) {
             Minson._encode(value, input.get(key)); 
         }
     },
 
     mapDecode: (config) => {
-        var out = config instanceof WeakMap ? new WeakMap() : new Map();
+        if (config instanceof MinsonConfig && config.children) {
+            config = config.children;
+        }
+
+        var out = new Map();
         for (var [key, value] of config) {
             out.set(key, Minson._decode(value));
         }
@@ -628,8 +681,8 @@ var Minson = module.exports =  {
 
     setDecode: (config) => {
         return config instanceof WeakSet ? 
-            new WeakSet(arrayDecode(Array.from(config))) : 
-            new Set(arrayDecode(Array.from(config)));
+            new WeakSet(Minson.arrayDecode(Array.from(config))) : 
+            new Set(Minson.arrayDecode(Array.from(config)));
     },
 
     _typedArrayConfig: (config) => {

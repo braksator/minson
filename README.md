@@ -164,8 +164,6 @@ The following data structures are supported by Minson templates.
 >
 > [Map](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map)
 >
-> [WeakMap](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap)
->
 > [Set](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set)
 >
 > [WeakSet](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet)
@@ -179,8 +177,9 @@ encoded string.
 
 **Object**
 
-This data structure cannot be defined with a config string, it must be 
-templated using an Object.
+Objects hold key-value pairs and are the most commonly used structure.  The
+template will define each key and the value of the key will be the template or
+configuration of the value for that key in the corresponding input data.
 
 Example:
 ```javascript
@@ -189,15 +188,21 @@ Example:
   aString: 'varchar',
   aNumber: 'int(32)',
 }
+
+// Also configure an object with a string and a number.
+'object<aString: varchar, aNumber: int(32)>'
 ```
 
 ### array
 
 **Array**
 
-This data structure CAN be defined with a config string for simple cases, it 
-can also be templated using an Array which gives greater flexibility in terms of 
-nesting structures.
+Arrays hold a list of values.  The template will define each array element
+as a template or configuration string for the data type or structure that 
+will be provided in that array position in the correponding input data.
+If only a single element is templated it will be assumed that the input data
+array can be of any size and each element will be of the same data type or 
+data structure.
 
 Examples:
 ```javascript
@@ -224,28 +229,22 @@ Examples:
 
 **Map**
 
-This data structure cannot be defined with a config string, it must be 
-templated using a Map().
+A JavaScript Map() is an alternative to using an Object to hold key-value pairs.
 
 Example:
 ```javascript
 // Configure a map with a string and a number.
 new Map([['aString', 'varchar'], ['aNumber', 'int(32)']])
+
+// Also configure a map with a string and a number.
+'map<aString: varchar, aNumber: int(32)>'
 ```
-
-### weakmap
-
-**WeakMap**
-
-Usage is similar to map (See "map")
 
 ### set
 
 **Set**
 
-This data structure CAN be defined with a config string, it can also be 
-templated using a Set().  Note that templating using a Set() won't allow to 
-define a fixed-length set.
+A Set is like an Array, but duplicate values are automatically omitted.
 
 Examples:
 ```javascript
@@ -255,13 +254,41 @@ new Set(['int(32)'])
 // Configure a set of 100 numbers.
 'set(100)<int(32)>'
 
+// Configure a set of 5 numbers using a Set() template.  Notice the cheeky 
+// capitilzation and whitespace changes to avoid Set() omitting duplicates.
+new Set(['int(32)', 'Int(32)', 'INt(32)', 'int (32)', 'int(32) '])
+
+// Configure a set of 5 numbers using a Set() template and the config 
+// generator features.  (See "Generating Configuration")
+new Set([
+  Minson.config(Minson.type.INT, 8),
+  Minson.config(Minson.type.INT, 8),
+  Minson.config(Minson.type.INT, 8),
+  Minson.config(Minson.type.INT, 8),
+  Minson.config(Minson.type.INT, 8),
+])
 ```
 
 ### weakset
 
 **WeakSet**
 
-Usage is similar to set (See "set")
+A WeakSet is like a Set, but is for holding Objects.  
+
+Examples:
+```javascript
+// Configure a weakset using a WeakSet() template. Notice the cheeky 
+// capitilzation and whitespace changes to avoid Set() omitting duplicates.
+new WeakSet([{type: 'object'}, {type: 'Object'}])
+
+// Configure a weakset using a WeakSet() template and the config generator 
+// features. (See "Generating Configuration")
+new WeakSet([Minson.config(Minson.type.OBJECT), Minson.config(Minson.config.OBJECT)])
+
+// Configure a weakset using a configuration string.
+'weakset<object, object>'
+```
+
 
 ## Data Types
 
@@ -591,11 +618,11 @@ Just remember to set this the same way for encode() and decode().
 
 ## Generating Configuration
 
-An alternative to typing `'type(param)[default]{charset}'` strings is to
+An alternative to typing `'type(param)[default]{charset}<children>'` strings is to
 generate configuration objects directly using `Minson.config()`.
 
 ```javascript
-var cfgStr = Minson.config(Minson.type.TYPE, param, default, charset);
+var cfgStr = Minson.config(Minson.type.TYPE, param, default, charset, children);
 ```
 
 It may be preferable to use this in order to catch configuration issues
