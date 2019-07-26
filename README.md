@@ -175,6 +175,94 @@ If this isn't sufficient, and your data is serializable with JSON,
 you can use the *json* data type to include the data structure into a Minson
 encoded string.
 
+### object
+
+**Object**
+
+This data structure cannot be defined with a config string, it must be 
+templated using an Object.
+
+Example:
+```javascript
+// Configure an object with a string and a number.
+{
+  aString: 'varchar',
+  aNumber: 'int(32)',
+}
+```
+
+### array
+
+**Array**
+
+This data structure CAN be defined with a config string for simple cases, it 
+can also be templated using an Array which gives greater flexibility in terms of 
+nesting structures.
+
+Examples:
+```javascript
+// Configure an array that contains 2 values; a string and a number.
+['varchar', 'int(32)']
+
+// Also configure an array that contains 2 values; a string and a number.
+'array(2)<varchar, int(32)>'
+
+// Configure an array of unlimited length that only contains numbers.
+['int(32)']
+
+// Also configure an array of unlimited length that only contains numbers.
+'array<int(32)>'
+
+// Configure an array of unlimited length that contains any type of variable.
+['']
+
+// Also configure an array of unlimited length that contains any type of variable.
+'array'
+```
+
+### map
+
+**Map**
+
+This data structure cannot be defined with a config string, it must be 
+templated using a Map().
+
+Example:
+```javascript
+// Configure a map with a string and a number.
+new Map([['aString', 'varchar'], ['aNumber', 'int(32)']])
+```
+
+### weakmap
+
+**WeakMap**
+
+Ussage is similar to map (See "map")
+
+### set
+
+**Set**
+
+This data structure CAN be defined with a config string, it can also be 
+templated using a Set().  Note that templating using a Set() won't allow to 
+define a fixed-length set.
+
+Examples:
+```javascript
+// Configure a set of unlimited length that only contains numbers.
+new Set(['int(32)'])
+
+// Configure a set of 100 numbers.
+'set(100)<int(32)>'
+
+```
+
+### weakset
+
+**WeakSet**
+
+Usage is similar to set (See "set")
+
 ## Data Types
 
 In addition to data structures, the following is a list of supported data
@@ -416,8 +504,6 @@ to `['int(8)']` and specifying `int8array(3)[5]` will convert it to
 `['int(8)[5]', 'int(8)[5]', 'int(8)[5]']`.  The correct TypedArray type will be
 restored during decoding.
 
-> This feature currently has no test coverage
-
 ## Variables of unknown or mixed type
 
 This isn't an ideal usage of Minson, but you can supply an empty configuration
@@ -516,7 +602,7 @@ It may be preferable to use this in order to catch configuration issues
 early.
 
 Allowed values for TYPE are: 
-BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, WCHAR, VARCHAR, JSON,
+ARRAY, SET, WEAKSET, BOOL, ENUM, INT, UINT, FLOAT, BIGINT, BIGUINT, CHAR, WCHAR, VARCHAR, JSON,
 INT8ARRAY, UINT8ARRAY, UINT8CLAMPEDARRAY, INT16ARRAY, UINT16ARRAY, INT32ARRAY,
 UINT32ARRAY, FLOAT32ARRAY, FLOAT64ARRAY, BIGINT64ARRAY, BIGUINT64ARRAY
 
@@ -560,20 +646,6 @@ on them.
 If you prefer the terminology, Minson.encode() is aliased with 
 Minson.stringify() and Minson.serialize().  Similarly Minson.decode() is
 aliased with Minson.parse() and Minson.unserialize().
-
-## Configuring Data Structures Without A Template Of The Structure
-
-It would be nice to specify Objects, Arrays, Sets, and Maps through the config string
-or Minson.config() methods.  It would be convenient to define fixed-length Arrays 
-without repeating the data type n-times inside an actual array. It would be 
-great if fixed-length Sets were supported (repeating a string n-times in a Set
-doesn't work too great!  Woops!).
-
-But currently the only implementation of data structures requires templating
-using the data structure itself.  This makes it easy to specify the child
-elements, such as Object keys.
-
-*It may be possible to handle this functionality in the future.*
 
 ## Unexpected Values
 

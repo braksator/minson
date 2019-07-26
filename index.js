@@ -30,11 +30,11 @@ var Minson = module.exports =  {
 
     type: {
         //OBJECT:             new MinsonType({type: 'object', struct: true}),
-        //ARRAY:              new MinsonType({type: 'array', struct: true}),
+        ARRAY:              new MinsonType({type: 'array', struct: true}),
         //MAP:                new MinsonType({type: 'map', struct: true}),
         //WEAKMAP:            new MinsonType({type: 'weakmap', handler: 'map', struct: true}),
-        //SET:                new MinsonType({type: 'set', struct: true}),
-        //WEAKSET:            new MinsonType({type: 'weakset', handler: 'set', struct: true}),
+        SET:                new MinsonType({type: 'set', struct: true}),
+        WEAKSET:            new MinsonType({type: 'weakset', handler: 'set', struct: true}),
 
         BOOL:               new MinsonType({type: 'bool'}),
         ENUM:               new MinsonType({type: 'enum', paramRequired: true}),
@@ -116,40 +116,69 @@ var Minson = module.exports =  {
     configToString(config) {
         var param = Minson._paramToString(config.param);
         var def = Minson._paramToString(config.default);
+        var children = Minson._paramToString(config.children);
         return config.type.toLowerCase() 
             + (param ? '(' + param + ')': '') 
             + (def ? '[' + def + ']' : '') 
-            + (config.charset ? '{' + config.charset + '}' : '');
+            + (config.charset ? '{' + config.charset + '}' : '')
+            + (config.children ? '{' + config.children + '}' : '');
     },
 
     stringToConfig: (str) => {
         var config = {};
+        var stack = [];
+        var accumulator = [''];
+        
+        var symbols = {
+            '[': {close: ']', label: 'default'},
+            '(': {close: ')', label: 'param'},
+            '{': {close: '}', label: 'charset'},
+            '<': {close: '>', label: 'children'},
+        };
 
-        // Before any parens or brackets.
-        var type = str.match(/[^()\[\]\{\}]+/g);
-        config.type = type ? type[0] : '';
-
-        // Get contents of optional parens.
-        var param = str.match(/\(([^)]+)\)/);
-        if (param && param[1]) {
-            config.param = param[1].trim();
+        for (var i = 0; i < str.length; ++i) {
+            var char = str[i];
+            if (char in symbols) {
+                if (!stack.length) {
+                    accumulator.push('');
+                }
+                else {
+                    accumulator[accumulator.length - 1] += char;
+                }
+                stack.push(char);
+            }
+            else if (stack.length && char == symbols[stack[stack.length - 1]].close) {
+                if (stack.length === 1) {
+                    config[symbols[stack[0]].label] = accumulator[accumulator.length - 1];
+                    accumulator.pop();
+                }
+                else {
+                    accumulator[accumulator.length - 1] += char;
+                }
+                stack.pop();
+            }
+            else {
+                accumulator[accumulator.length - 1] += char;
+            }
         }
-        // Get contents of optional brackets.
-        var def = str.match(/\[([^)]+)\]/);
-        if (def && def[1]) {
-            config.default = def[1].trim();
-        }
-        // Get contents of optional braces.
-        var charset = str.match(/\{([^)]+)\}/);
-        if (charset && charset[1]) {
-            config.charset = charset[1];
-        }
+        config.type = accumulator[0];
         
         if (config.param) {
             config.param = Minson._stringToParam(config.param);
         }
         if (config.default) {
             config.default = Minson._stringToParam(config.default);
+        }
+        if (config.children) {
+            config.children = Minson._stringToParam(config.children);
+            if (Array.isArray(config.children)) {
+                for (var i = 0; i < config.children.length; ++i) {
+                    config.children[i] = Minson.stringToConfig(config.children[i]);
+                }
+            }
+            else {
+                config.children = Minson.stringToConfig(config.children);
+            }
         }
         
         return Minson.config(config);
@@ -506,7 +535,7 @@ var Minson = module.exports =  {
     },
     
     arrayEncode: (config, input) => {
-        var size = config.length > 1 ? config.length : null;
+        var size = config.length > 1 ? config.length : config.param ? config.param : null;
 
         if (size === null) {
             var max = Math.pow(2, 8) - 1;
@@ -520,6 +549,15 @@ var Minson = module.exports =  {
 
         var iters = size === null ? input.length : size;
 
+        if (!Array.isArray(config) && config.children) {
+            if (Array.isArray(config.children)) {
+                config = config.children;
+            }
+            else {
+                config = [config.children];
+            }
+        }
+
         for (var i = 0; i < iters; ++i) {
             Minson._encode(config[i] || config[0], input[i]);
         }
@@ -528,7 +566,7 @@ var Minson = module.exports =  {
 
     arrayDecode: (config) => {
         var out = [];
-        var size = config.length > 1 ? config.length : null;
+        var size = config.length > 1 ? config.length : config.param ? config.param : null;
 
         if (size === null) {
             var max = Math.pow(2, 8) - 1;
@@ -537,6 +575,15 @@ var Minson = module.exports =  {
             while (lastLength == max) {
                 lastLength = Minson._decode('uint(8)');
                 size += lastLength;
+            }
+        }
+
+        if (!Array.isArray(config) && config.children) {
+            if (Array.isArray(config.children)) {
+                config = config.children;
+            }
+            else {
+                config = [config.children];
             }
         }
 
@@ -587,7 +634,8 @@ var Minson = module.exports =  {
 
     _typedArrayConfig: (config) => {
         var subConfig = [];
-        var typeDef = Minson.type[config.type];
+        var typeDef = Minson.type[config.type.toUpperCase()];
+        var subType = typeDef.sub.type + '(' + typeDef.sub.size + ')';
         if (config.default !== undefined) {
             subType += '[' + config.default + ']';
         }
@@ -603,7 +651,7 @@ var Minson = module.exports =  {
     },
 
     typedArrayDecode: (config) => {
-        return this[config.type].from(Minson._decode(Minson._typedArrayConfig(config)));
+        return global[config.type].from(Minson._decode(Minson._typedArrayConfig(config)));
     },
 
     jsonEncode: (config, input) => {

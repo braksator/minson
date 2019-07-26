@@ -677,6 +677,40 @@ describe('Minson', function () {
     expect(enc1 == enc2 && enc1 == enc3 && dec1 == dec2 && dec1 == dec3).to.equal(true);
   });
 
+  it('should encode and decode arrays supplied with string config', function () {
+    var Minson = require('../index');
+    var template = {
+      myArray: 'array(2)<int(8)>',
+    };
+
+    var input = {
+      myArray: [23, 45],
+    };
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
+
+  it('should encode and decode arrays supplied with string config', function () {
+    var Minson = require('../index');
+    var template = {
+      myArray: 'int8array',
+    };
+
+    const typedArray1 = new Int8Array(8);
+    typedArray1[0] = 23;
+    typedArray1[1] = 45;
+    var input = {
+      myArray: typedArray1,
+    };
+
+    var out = Minson.encode(template, input);
+    var result = Minson.decode(template, out);
+
+    expect(result).to.eql(input);
+  });
 });
 
 
