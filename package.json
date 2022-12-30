@@ -33,7 +33,7 @@
     "eslint": "^6.1.0",
     "eslint-plugin-import": "^2.18.2",
     "istanbul": "^0.4.5",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "mocha-eslint": "^3.0.1"
   },
   "dependencies": {}
